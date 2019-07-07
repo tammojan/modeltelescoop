@@ -1,0 +1,6 @@
+pygame
+numpy
+astropy
+matplotlib
+scipy
+json
