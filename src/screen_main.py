@@ -6,14 +6,12 @@ Created on Fri Apr 26 09:41:32 2019
 """
 
 import pygame
-import numpy as np
+
 from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT
-from renderlineplot import RenderLinePlot
-from radiodataset import RadioDataSet
+
 from screenserver import ScreenServer
 from renderbar import RenderBar
 
-from astropy.coordinates import SkyCoord
 
 from util import altaz_to_unit, unit_to_skyxy
 
