@@ -29,9 +29,8 @@ class RenderBar(RenderBase):
         self.full_init = True
         
         # Load fonts
-        title_font = pygame.font.Font('resources/Now-Bold.otf', 64)
-        subtitle_font = pygame.font.Font('resources/Now-Regular.otf', 40)
-        #h1_font = pygame.font.Font('resources/Now-Bold.otf', 40)
+        title_font = pygame.font.Font('resources/font/Now-Bold.otf', 64)
+        subtitle_font = pygame.font.Font('resources/font/Now-Regular.otf', 40)
         
         # Sun info
         self.sun_title_text = title_font.render('De Zon', True, WHITE)
