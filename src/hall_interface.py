@@ -23,8 +23,8 @@ class HallInterface:
     	
     def enable(self):
         """ Enable the bus """
-        self.spi.open(0, 0)
-        self.spi.max_speed_hz = 1000 # 1 MHz
+        self.spi.open(self.bus, self.chip_select)
+        self.spi.max_speed_hz = 1000000 # 1 MHz
         self.spi.mode = 1
         self.spi.cshigh = False
         
@@ -37,19 +37,17 @@ class HallInterface:
         # the sensor
         self.spi.readbytes(2)
         result = self.spi.readbytes(2)
-        print(result)
         result_m = (result[0] << 8) + result[1]
         result_m = result_m & 0x3FFF
         result_angle = result_m / 16384.0 * 360.0
         return result_angle
 
 if __name__ == "__main__":
-    spi = HallInterface(0, 0)
+    spi = HallInterface(0, 1)
     spi.enable()
     try:
         while True:
-            #print(spi.get_angle())
-            spi.get_angle()
-            sleep(0.5)
+            print(spi.get_angle())
+            sleep(0.1)
     except KeyboardInterrupt:
         spi.finish()
