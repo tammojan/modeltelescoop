@@ -9,7 +9,7 @@ from hall_interface import HallInterface
 import socket
 import json
 from time import sleep
-import random
+import numpy as np
 
 def send_altaz(sock: socket, alt: float, az: float):
     """ Send an altaz pair to the connected server through the socket"""
@@ -19,6 +19,32 @@ def send_altaz(sock: socket, alt: float, az: float):
         sock.send(bytes(json.dumps(ob), 'utf-8'))
     except IOError:
         print('Error: Broken pipe')
+
+
+def convert_azimuth(az_in: float):
+    """Convert azimuth sensor readout to actual calibrated azimuth
+
+    Args:
+        az_in (float): Input azimuth, 0<=az_in<360
+
+    Returns:
+        float: calibrated azimuth, 0<=az<360
+    """
+    # TODO: calibrate this
+    return az_in
+
+
+def convert_altitude(alt_in: float):
+    """Convert altitude sensor readout to actual calibrated altitude
+
+    Args:
+        az_in (float): Input altitude, 0<=alt_in<360
+
+    Returns:
+        float: calibrated altitude, 0<=alt<=90
+    """
+    # TODO: calibrate this
+    return np.interp(alt_in, np.array([131.5, 216.5]), np.array([0., 90.]))
 
 
 def main():
@@ -47,8 +73,8 @@ def main():
         try:
             while True:
                 print('Transmitting')
-                azimuth = sensor_azi.get_angle()
-                altitude = sensor_alt.get_angle()
+                azimuth = convert_azimuth(sensor_azi.get_angle())
+                altitude = convert_altitude(sensor_alt.get_angle())
                 print(azimuth)
                 send_altaz(s, altitude, azimuth)
                 sleep(0.2)
