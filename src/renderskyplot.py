@@ -65,11 +65,8 @@ class RenderSkyPlot(RenderBase):
         self.overlay = pygame.Surface(self.background.get_size(), 
                                       pygame.SRCALPHA)
         self.overlay.fill(BLACK)
-        
-        self.sun_xy = (0, 0)
-        self.moon_xy = (0, 0)
-        self.mars_xy = (0, 0)
-        self.jupiter_xy = (0, 0)
+
+        self.__update_bodies__()
         
         self.time_font = pygame.font.SysFont('Arial', 18)
         self.time_font.set_bold(True)
