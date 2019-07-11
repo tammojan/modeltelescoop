@@ -164,48 +164,16 @@ class RenderSkyPlot(RenderBase):
             #rect_to_update = updated_rect.union(self.last_updated_rect)
 
             # Draw the sun
-            if self.bodies[0].xy[0] >= 0 and self.bodies[0].xy[1] >= 0:
-                sun = self.overlay.blit(self.bodies[0].img, 
-                                        (self.bodies[0].xy[0]-self.bodies[0].img.get_width()/2,
-                                         self.bodies[0].xy[1]-self.bodies[0].img.get_height()/2))
-                if len(self.last_updated_rects[1]):
-                    sun = sun.union(self.last_updated_rects[1])
-                rects_to_update.append(sun)
-            else:
-                rects_to_update.append([])
-            
-            # Draw the moon
-            if self.bodies[1].xy[0] >= 0 and self.bodies[1].xy[1] >= 0:
-                moon = self.overlay.blit(self.bodies[1].img, 
-                                        (self.bodies[1].xy[0]-self.bodies[1].img.get_width()/2,
-                                         self.bodies[1].xy[1]-self.bodies[1].img.get_height()/2))
-                if len(self.last_updated_rects[2]):
-                    moon = moon.union(self.last_updated_rects[2])
-                rects_to_update.append(moon)
-            else:
-                rects_to_update.append([])
-            
-            # Draw mars
-            if self.bodies[2].xy[0] >= 0 and self.bodies[2].xy[1] >= 0:
-                mars = self.overlay.blit(self.bodies[2].img, 
-                                        (self.bodies[2].xy[0]-self.bodies[2].img.get_width()/2,
-                                         self.bodies[2].xy[1]-self.bodies[2].img.get_height()/2))
-                if len(self.last_updated_rects[3]):
-                    mars = mars.union(self.last_updated_rects[3])
-                rects_to_update.append(mars)
-            else:
-                rects_to_update.append([])
-            
-            # Draw jupiter
-            if self.bodies[3].xy[0] >= 0 and self.bodies[3].xy[1] >= 0:
-                jupiter = self.overlay.blit(self.bodies[3].img, 
-                                        (self.bodies[3].xy[0]-self.bodies[3].img.get_width()/2,
-                                         self.bodies[3].xy[1]-self.bodies[3].img.get_height()/2))
-                if len(self.last_updated_rects[4]):
-                    jupiter = jupiter.union(self.last_updated_rects[4])
-                rects_to_update.append(jupiter)
-            else:
-                rects_to_update.append([])
+            for body_num, body in enumerate(self.bodies):
+                if body.xy[0] >= 0 and body.xy[1] >= 0:
+                    rect = self.overlay.blit(body.img,
+                                            (body.xy[0]-body.img.get_width()/2,
+                                             body.xy[1]-body.img.get_height()/2))
+                    if len(self.last_updated_rects[body_num+1]):
+                        rect = rect.union(self.last_updated_rects[body_num+1])
+                    rects_to_update.append(rect)
+                else:
+                    rects_to_update.append([])
             
             # Finally, redraw the circle again to make sure it is on top
             pygame.draw.circle(self.overlay, RED, (self.x, self.y), 20, 2)
