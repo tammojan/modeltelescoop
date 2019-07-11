@@ -19,6 +19,7 @@ from enum import Enum
 import datetime
 import threading
 
+import numpy as np
 
 # Some common colours
 TRANSPARANT = (0, 0, 0, 0)
@@ -209,10 +210,12 @@ class RenderSkyPlot(RenderBase):
         closest = None
         closest_dist = 0.0
         
-        dist_sun = sqrt((self.x-self.bodies[0].xy[0])**2 + (self.y-self.bodies[0].xy[1])**2)
-        dist_moon = sqrt((self.x-self.bodies[1].xy[0])**2 + (self.y-self.bodies[1].xy[1])**2)
-        dist_mars = sqrt((self.x-self.bodies[2].xy[0])**2 + (self.y-self.bodies[2].xy[1])**2)
-        dist_jupiter = sqrt((self.x-self.bodies[3].xy[0])**2 + (self.y-self.bodies[3].xy[1])**2)
+        dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
+
+        closest_dist = np.min(dists)
+
+        if closest_dist <= THRESHOLD:
+            return np.argmin(dists)
         
         if dist_sun <= THRESHOLD:
             closest = Bodies.SUN
