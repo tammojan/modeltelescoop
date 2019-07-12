@@ -25,7 +25,7 @@ def main():
     
     # Create a window or display
     screen = pygame.display.set_mode((1920, 1080), 
-                                     pygame.FULLSCREEN |
+                                     #pygame.FULLSCREEN |
                                      pygame.DOUBLEBUF |
                                      pygame.HWACCEL)
             
@@ -54,6 +54,9 @@ def main():
     # Start a timer (= repeating event) for updating the sky coordinates
     # every 60s
     pygame.time.set_timer(UPDATE_COORDS_EVENT, 60000)
+    
+    # Post the update event to ensure it starts updating right away
+    pygame.event.post(pygame.event.Event(UPDATE_COORDS_EVENT))
     
     # Quit flag
     quit_attempt = False

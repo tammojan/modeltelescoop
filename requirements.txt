@@ -4,3 +4,4 @@ astropy
 matplotlib
 scipy
 json
+pillow
