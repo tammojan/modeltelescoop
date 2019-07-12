@@ -8,6 +8,7 @@ Created on Mon Jun 24 14:21:33 2019
 import socket
 import threading
 import json
+import select
 
 # The alt az to be modified (global to be used in all threads)
 alt = 0.0
@@ -71,8 +72,10 @@ class ScreenServer(object):
         # Loop to continuously listen
         while run_thread1:
             try:
-                received = client.recv(512).decode('utf-8')
-                print(received)
+                readable, writable, exceptional = select.select([client], [], [])
+                if len(exceptional) > 0:
+                    raise Exception('Client disconnected')
+                received = readable[0].recv(512).decode('utf-8')
                 if received:
                     received_json = json.loads(received)
                     alt = received_json.get('alt', 0.0)

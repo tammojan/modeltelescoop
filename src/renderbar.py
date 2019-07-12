@@ -9,7 +9,6 @@ Created on Thu Jun 27 11:16:27 2019
 import pygame
 
 from renderbase import RenderBase
-from renderskyplot import Bodies
 
 from util import draw_text
 
@@ -83,8 +82,7 @@ class RenderBar(RenderBase):
         screen.blit(self.title_text, (1100, 10))
         screen.blit(self.subtitle_text, (1100, 80))
 
-
-        if self.bar_mode == Bodies.SUN:
+        if self.bar_mode == 1:
             ### --- Sun --- ###
             screen.blit(self.sun_title_text, (1600, 250))
             pygame.draw.line(screen, WHITE, 
@@ -97,7 +95,7 @@ class RenderBar(RenderBase):
             screen.blit(self.sun_par2, (1100, 700))
             
             ### --- Moon --- ###
-        if self.bar_mode == Bodies.MOON:
+        if self.bar_mode == 2:
             screen.blit(self.moon_title_text, (1570, 250))
             pygame.draw.line(screen, WHITE, 
                              (1100, 295), (1560, 295), 4)
@@ -110,7 +108,7 @@ class RenderBar(RenderBase):
             screen.blit(self.moon_par2, (1100, 650))
             
             ### --- Mars --- ###
-        if self.bar_mode == Bodies.MARS:
+        if self.bar_mode == 3:
             screen.blit(self.mars_title_text, (1668, 250))
             pygame.draw.line(screen, WHITE, 
                              (1100, 295), (1650, 295), 4)
@@ -120,7 +118,7 @@ class RenderBar(RenderBase):
             screen.blit(self.mars_photo, (1200, 330))
             
             ### --- Jupiter --- ###
-        if self.bar_mode == Bodies.JUPITER:
+        if self.bar_mode == 4:
             screen.blit(self.jupiter_title_text, (1610, 250))
             pygame.draw.line(screen, WHITE, 
                              (1100, 295), (1590, 295), 4)
@@ -132,5 +130,5 @@ class RenderBar(RenderBase):
         
         return rects_to_update
                 
-    def set_body_of_interest(self, body: Bodies):
+    def set_body_of_interest(self, body: int):
         self.bar_mode = body
