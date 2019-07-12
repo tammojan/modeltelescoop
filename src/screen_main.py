@@ -25,9 +25,9 @@ def main():
     
     # Create a window or display
     screen = pygame.display.set_mode((1920, 1080), 
-                                     pygame.FULLSCREEN) # |
-                                     #pygame.DOUBLEBUF |
-                                     #pygame.HWACCEL)
+                                     #pygame.FULLSCREEN) # |
+                                     pygame.DOUBLEBUF |
+                                     pygame.HWACCEL)
             
     # Create the clock object (for FPS control)
     clock = pygame.time.Clock()
