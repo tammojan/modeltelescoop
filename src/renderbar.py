@@ -12,6 +12,8 @@ from renderbase import RenderBase
 
 from util import draw_text
 
+from gifimage import GIFImage
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0, 255)
 
@@ -21,7 +23,7 @@ def preload_image(image_path):
 class RenderBar(RenderBase):
     def __init__(self):
         
-        self.bar_mode = None
+        self.bar_mode = 4
         
         self.stlogo = preload_image('./resources/stlogo.png')
         self.astronlogo = preload_image('./resources/astronlogo.png')
@@ -70,6 +72,8 @@ class RenderBar(RenderBase):
         # Jupiter info
         self.jupiter_title_text = title_font.render('Jupiter', True, WHITE)
         self.jupiter_photo = preload_image('resources/jupiter_photo.jpg')
+        
+        self.pulsar_animation = GIFImage('resources/pulsar360.gif')
         
     def render(self, screen: pygame.Surface):
         rects_to_update = []
@@ -125,10 +129,11 @@ class RenderBar(RenderBase):
             pygame.draw.line(screen, WHITE, 
                              (1820, 295), (1910, 295), 4)
             
-            screen.blit(self.jupiter_photo, (1200, 330))
+            #screen.blit(self.jupiter_photo, (1200, 330))
+            self.pulsar_animation.render(screen, (1200, 330))
             
-        
         return rects_to_update
                 
     def set_body_of_interest(self, body: int):
-        self.bar_mode = body
+        #self.bar_mode = body
+        pass

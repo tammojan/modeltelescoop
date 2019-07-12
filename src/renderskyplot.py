@@ -14,7 +14,6 @@ from renderbase import RenderBase
 from radiodataset import get_body_skyxy
 
 from math import sqrt
-from enum import Enum
 
 import datetime
 import threading
