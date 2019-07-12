@@ -78,7 +78,7 @@ class RenderSkyPlot(RenderBase):
                                       pygame.SRCALPHA)
         self.overlay.fill(BLACK)
 
-        self.__update_bodies__()
+        #self.__update_bodies__()
         
         self.time_font = pygame.font.SysFont('Arial', 18)
         self.time_font.set_bold(True)
@@ -207,7 +207,6 @@ class RenderSkyPlot(RenderBase):
         # Threshold for minimum amount of pixels to consider being 'over' a body
         THRESHOLD = 20.0
         
-        closest = None
         closest_dist = 0.0
         
         dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
@@ -216,24 +215,8 @@ class RenderSkyPlot(RenderBase):
 
         if closest_dist <= THRESHOLD:
             return np.argmin(dists)
-        
-        if dist_sun <= THRESHOLD:
-            closest = Bodies.SUN
-            closest_dist = dist_sun
-        if dist_moon <= THRESHOLD and \
-            (dist_moon < closest_dist or closest_dist == 0.0):
-            closest = Bodies.MOON
-            closest_dist = dist_moon
-        if dist_mars <= THRESHOLD and \
-            (dist_mars < closest_dist or closest_dist == 0.0):
-            closest = Bodies.MARS
-            closest_dist = dist_mars
-        if dist_jupiter <= THRESHOLD and \
-            (dist_jupiter < closest_dist or closest_dist == 0.0):
-            closest = Bodies.JUPITER
-            closest_dist = dist_jupiter
-            
-        return closest
+        return None
+
         
     def __update_bodies__(self):
         for body in self.bodies:
