@@ -30,13 +30,6 @@ RED = (255, 0, 0)
 UPDATE_COORDS_EVENT = pygame.USEREVENT+1
 
 
-# Enums to refer to specific celestial bodies within the application
-class Bodies(Enum):
-    SUN = 1
-    MOON = 2
-    MARS = 3
-    JUPITER = 4
-
 # Utility functions to load images correctly
 def preload_image(image_path):
     return pygame.image.load(image_path).convert()
@@ -214,9 +207,9 @@ class RenderSkyPlot(RenderBase):
         closest_dist = np.min(dists)
 
         if closest_dist <= THRESHOLD:
-            return np.argmin(dists)
-        return None
-
+            return np.argmin(dists) + 1
+        else:
+            return None
         
     def __update_bodies__(self):
         for body in self.bodies:
