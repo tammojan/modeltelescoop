@@ -35,7 +35,7 @@ def main():
     
     # Create a window or display
     screen = pygame.display.set_mode((1920, 1080), 
-                                     pygame.FULLSCREEN) |
+                                     pygame.FULLSCREEN |
                                      pygame.DOUBLEBUF |
                                      pygame.HWACCEL)
             
