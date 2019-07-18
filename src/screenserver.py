@@ -9,6 +9,9 @@ import socket
 import threading
 import json
 import select
+import logging
+
+from json.decoder import JSONDecodeError
 
 # The alt az to be modified (global to be used in all threads)
 alt = 0.0
@@ -25,7 +28,7 @@ class ScreenServer(object):
         self.host = host
         self.port = port
         # Open a UDP socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind((self.host, self.port))
         
@@ -41,9 +44,9 @@ class ScreenServer(object):
         
     def listen(self):
         """ Start to listen to incoming connections """
-        self.sock.listen(1)
-        print('Waiting for client...')
-        self.listen_thread = threading.Thread(target = self.wait_for_client)
+        #self.sock.listen(10)
+        logging.info('Waiting for client...')
+        self.listen_thread = threading.Thread(target = self.listen_to_client)
         self.listen_thread.daemon = True
         self.listen_thread.start()
         
@@ -53,18 +56,18 @@ class ScreenServer(object):
         global run_thread2
         while run_thread2:
             # Accept a client once it tries to connect
-            client, address = self.sock.accept()
-            client.settimeout(60)
-            print('Client connected.')
+            #client, address = self.sock.accept()
+            #client.settimeout(60)
+            logging.info('Client connected.')
             
             # Start the thread containing the listener
-            self.data_thread = threading.Thread(target = self.listen_to_client,args = (client,address))
+            self.data_thread = threading.Thread(target = self.listen_to_client,args = (s))
             self.data_thread.daemon = True
             self.data_thread.start()
         self.sock.close()
         return False
             
-    def listen_to_client(self, client, address):
+    def listen_to_client(self):
         """ This method takes a connected client and waits for incoming data """
         
         global alt, az, run_thread1
@@ -72,18 +75,20 @@ class ScreenServer(object):
         # Loop to continuously listen
         while run_thread1:
             try:
-                readable, writable, exceptional = select.select([client], [], [])
-                if len(exceptional) > 0:
-                    raise Exception('Client disconnected')
-                received = readable[0].recv(512).decode('utf-8')
+                received = self.sock.recv(128).decode('utf-8')
                 if received:
-                    received_json = json.loads(received)
-                    alt = received_json.get('alt', 0.0)
-                    az = received_json.get('az', 0.0)
-                    #print("Alt: {:.1f}, Az: {:.1f}".format(alt, az))
+                    try:
+                        received_json = json.loads(received)
+                        alt = received_json.get('alt', 0.0)
+                        az = received_json.get('az', 0.0)
+                    except JSONDecodeError as e:
+                        logger.exception(e)
+                        pass
                 else:
+                    logging.exception('Nothing received')
                     raise Exception('Client disconnected')
-            except:
+            except Exception as e:
+                logging.exception(e)
                 client.close()
         return False
             

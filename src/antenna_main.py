@@ -14,7 +14,6 @@ import numpy as np
 def send_altaz(sock: socket, alt: float, az: float):
     """ Send an altaz pair to the connected server through the socket"""
     ob = {'alt': round(alt), 'az': round(az)}
-    print(ob)
     sock.send(bytes(json.dumps(ob), 'utf-8'))
 
 
@@ -60,12 +59,11 @@ def main():
           print("Socket exists, closing")
           s.close()
       else:
-          s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+          s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
       try:
         try:
             print("Trying to connect")
-            s.connect(('192.168.4.1', 7272))
+            s.connect(('192.168.178.24', 7272))
         except OSError as e:
             # We got an error, print out what, then sleep and try again
             print("Connection failed (attempt {}): {}".format(counter, e))
@@ -73,13 +71,14 @@ def main():
             counter = counter + 1
             continue
         with s:
-          print('Connected')
+          print('Connected, starting normal operation.')
           while True:
               azimuth = convert_azimuth(sensor_azi.get_angle())
               altitude = convert_altitude(sensor_alt.get_angle())
               send_altaz(s, altitude, azimuth)
-              sleep(0.2)
-      except IOError:
+              sleep(0.1)
+      except IOError as e:
+          print(e)
           print("Broken pipe, reconnecting")
       except KeyboardInterrupt:
           print('Quitting...')

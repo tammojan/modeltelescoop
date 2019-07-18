@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Fri Apr 26 09:41:32 2019
@@ -11,24 +12,33 @@ from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT
 
 from screenserver import ScreenServer
 from renderbar import RenderBar
-
+import logging
+import os
+import sys
 
 from util import altaz_to_unit, unit_to_skyxy
 
 def main():
+    os.environ['DISPLAY'] = ':0'
+    # Init logger
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s',
+                        handlers=[logging.FileHandler("screen_server.log"),
+                                 logging.StreamHandler()])
+
+
     # PyGame initialisation
     pygame.init()
-    
+
     # Start the server for communication between RPis
     server = ScreenServer('', 7272)
     server.listen()
     
     # Create a window or display
     screen = pygame.display.set_mode((1920, 1080), 
-                                     #pygame.FULLSCREEN |
+                                     pygame.FULLSCREEN |
                                      pygame.DOUBLEBUF |
                                      pygame.HWACCEL)
-
+            
     # Create the clock object (for FPS control)
     clock = pygame.time.Clock()
     
@@ -54,7 +64,7 @@ def main():
     # Start a timer (= repeating event) for updating the sky coordinates
     # every 60s
     pygame.time.set_timer(UPDATE_COORDS_EVENT, 60000)
-
+    
     # Post the event into the queue to make sure it initialises at startup
     pygame.event.post(pygame.event.Event(UPDATE_COORDS_EVENT))
     
@@ -84,7 +94,7 @@ def main():
                     quit_attempt = True
                 if event.key == pygame.K_RETURN:
                     # Press Enter for a quick print of the FPS
-                    print('FPS: {:.0f}'.format(clock.get_fps()))
+                    logging.debug('FPS: {:.0f}'.format(clock.get_fps()))
             if quit_attempt:
                 break
             else:

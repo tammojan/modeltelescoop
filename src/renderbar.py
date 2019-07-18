@@ -12,8 +12,6 @@ from renderbase import RenderBase
 
 from util import draw_text
 
-from gifimage import GIFImage
-
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0, 255)
 
@@ -23,11 +21,12 @@ def preload_image(image_path):
 class RenderBar(RenderBase):
     def __init__(self):
         
-        self.bar_mode = 4
+        self.bar_mode = None
         
         self.stlogo = preload_image('./resources/stlogo.png')
         self.astronlogo = preload_image('./resources/astronlogo.png')
         self.full_init = True
+        self.changed_mode = True
         
         # Load fonts
         title_font = pygame.font.Font('resources/font/Now-Bold.otf', 64)
@@ -73,13 +72,13 @@ class RenderBar(RenderBase):
         self.jupiter_title_text = title_font.render('Jupiter', True, WHITE)
         self.jupiter_photo = preload_image('resources/jupiter_photo.jpg')
         
-        self.pulsar_animation = GIFImage('resources/pulsar360.gif')
-        
     def render(self, screen: pygame.Surface):
         rects_to_update = []
         # Clear the bar
-        rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))
         
+        if self.full_init:
+            rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))
+
         screen.blit(self.stlogo, (1200, 970))
         screen.blit(self.astronlogo, (1500, 970))
         
@@ -129,11 +128,61 @@ class RenderBar(RenderBase):
             pygame.draw.line(screen, WHITE, 
                              (1820, 295), (1910, 295), 4)
             
-            #screen.blit(self.jupiter_photo, (1200, 330))
-            self.pulsar_animation.render(screen, (1200, 330))
+            screen.blit(self.title_text, (1100, 10))
+            screen.blit(self.subtitle_text, (1100, 80))
+            self.full_init = False
+        if self.changed_mode:
+            rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 200, 820, 1080))
+
+            if self.bar_mode == 1:
+                ### --- Sun --- ###
+                screen.blit(self.sun_title_text, (1600, 250))
+                pygame.draw.line(screen, WHITE, 
+                                 (1100, 295), (1590, 295), 4)
+                pygame.draw.line(screen, WHITE, 
+                                 (1800, 295), (1910, 295), 4)
+                screen.blit(self.sun_mosaic, (1600, 370))
+                
+                screen.blit(self.sun_par1, (1100, 350))
+                screen.blit(self.sun_par2, (1100, 700))
+                
+                ### --- Moon --- ###
+            if self.bar_mode == 2:
+                screen.blit(self.moon_title_text, (1570, 250))
+                pygame.draw.line(screen, WHITE, 
+                                 (1100, 295), (1560, 295), 4)
+                pygame.draw.line(screen, WHITE, 
+                                 (1820, 295), (1910, 295), 4)
+                
+                screen.blit(self.moon_photo, (1150, 370))
+                
+                screen.blit(self.moon_par1, (1500, 350))
+                screen.blit(self.moon_par2, (1100, 650))
+                
+                ### --- Mars --- ###
+            if self.bar_mode == 3:
+                screen.blit(self.mars_title_text, (1668, 250))
+                pygame.draw.line(screen, WHITE, 
+                                 (1100, 295), (1650, 295), 4)
+                pygame.draw.line(screen, WHITE, 
+                                 (1820, 295), (1910, 295), 4)
+                
+                screen.blit(self.mars_photo, (1200, 330))
+                
+                ### --- Jupiter --- ###
+            if self.bar_mode == 4:
+                screen.blit(self.jupiter_title_text, (1610, 250))
+                pygame.draw.line(screen, WHITE, 
+                                 (1100, 295), (1590, 295), 4)
+                pygame.draw.line(screen, WHITE, 
+                                 (1820, 295), (1910, 295), 4)
+                
+                screen.blit(self.jupiter_photo, (1200, 330))
+            self.changed_mode = False
             
         return rects_to_update
                 
     def set_body_of_interest(self, body: int):
-        #self.bar_mode = body
-        pass
+        if body != self.bar_mode:
+            self.bar_mode = body
+            self.changed_mode = True
