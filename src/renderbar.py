@@ -78,8 +78,55 @@ class RenderBar(RenderBase):
         
         if self.full_init:
             rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))
-            screen.blit(self.stlogo, (1200, 970))
-            screen.blit(self.astronlogo, (1500, 970))
+
+        screen.blit(self.stlogo, (1200, 970))
+        screen.blit(self.astronlogo, (1500, 970))
+        
+        screen.blit(self.title_text, (1100, 10))
+        screen.blit(self.subtitle_text, (1100, 80))
+
+        if self.bar_mode == 1:
+            ### --- Sun --- ###
+            screen.blit(self.sun_title_text, (1600, 250))
+            pygame.draw.line(screen, WHITE, 
+                             (1100, 295), (1590, 295), 4)
+            pygame.draw.line(screen, WHITE, 
+                             (1800, 295), (1910, 295), 4)
+            screen.blit(self.sun_mosaic, (1600, 370))
+            
+            screen.blit(self.sun_par1, (1100, 350))
+            screen.blit(self.sun_par2, (1100, 700))
+            
+            ### --- Moon --- ###
+        if self.bar_mode == 2:
+            screen.blit(self.moon_title_text, (1570, 250))
+            pygame.draw.line(screen, WHITE, 
+                             (1100, 295), (1560, 295), 4)
+            pygame.draw.line(screen, WHITE, 
+                             (1820, 295), (1910, 295), 4)
+            
+            screen.blit(self.moon_photo, (1150, 370))
+            
+            screen.blit(self.moon_par1, (1500, 350))
+            screen.blit(self.moon_par2, (1100, 650))
+            
+            ### --- Mars --- ###
+        if self.bar_mode == 3:
+            screen.blit(self.mars_title_text, (1668, 250))
+            pygame.draw.line(screen, WHITE, 
+                             (1100, 295), (1650, 295), 4)
+            pygame.draw.line(screen, WHITE, 
+                             (1820, 295), (1910, 295), 4)
+            
+            screen.blit(self.mars_photo, (1200, 330))
+            
+            ### --- Jupiter --- ###
+        if self.bar_mode == 4:
+            screen.blit(self.jupiter_title_text, (1610, 250))
+            pygame.draw.line(screen, WHITE, 
+                             (1100, 295), (1590, 295), 4)
+            pygame.draw.line(screen, WHITE, 
+                             (1820, 295), (1910, 295), 4)
             
             screen.blit(self.title_text, (1100, 10))
             screen.blit(self.subtitle_text, (1100, 80))

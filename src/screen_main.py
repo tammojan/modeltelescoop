@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Fri Apr 26 09:41:32 2019
@@ -11,14 +12,23 @@ from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT
 
 from screenserver import ScreenServer
 from renderbar import RenderBar
-
+import logging
+import os
+import sys
 
 from util import altaz_to_unit, unit_to_skyxy
 
 def main():
+    os.environ['DISPLAY'] = ':0'
+    # Init logger
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s',
+                        handlers=[logging.FileHandler("screen_server.log"),
+                                 logging.StreamHandler()])
+
+
     # PyGame initialisation
     pygame.init()
-    
+
     # Start the server for communication between RPis
     server = ScreenServer('', 7272)
     server.listen()
@@ -84,7 +94,7 @@ def main():
                     quit_attempt = True
                 if event.key == pygame.K_RETURN:
                     # Press Enter for a quick print of the FPS
-                    print('FPS: {:.0f}'.format(clock.get_fps()))
+                    logging.debug('FPS: {:.0f}'.format(clock.get_fps()))
             if quit_attempt:
                 break
             else:
