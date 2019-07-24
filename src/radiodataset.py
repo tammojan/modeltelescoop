@@ -7,18 +7,35 @@ Created on Tue May 21 14:14:28 2019
 
 #from astropy.io import fits
 import astropy.units as u
-from astropy.coordinates import EarthLocation, AltAz, Galactic, get_body
+from astropy.coordinates import EarthLocation, AltAz, Galactic, get_body, SkyCoord
 from astropy.time import Time
+import astropy.units as u
 from util import altaz_to_unit, unit_to_skyxy
+import re
 
 
 DWINGELOO_LOCATION = EarthLocation(lat="52d48m43.27", lon="6d23m46.21")
 
 
 def get_body_skyxy(body: str):
+    """
+    Get xy coordinates for a sky body
 
-    coords = get_body(body, Time.now()) \
-    .transform_to(AltAz(obstime=Time.now(), location=DWINGELOO_LOCATION))
+    body can be:
+       radec(0.4,0.5): ra and dec in radians
+       altaz(0.4,0.5): alt and azimuth in radians
+       name: something that is accepted by get_body (e.g. 'sun', 'moon', 'jupiter')
+    """
+    time = Time.now()
+    if "radec" in body:
+        ra, dec = re.split('[(,)]', body)[1:3]
+        skycoord = SkyCoord(ra=float(ra)*u.rad, dec=float(dec)*u.rad)
+    elif "altaz" in body:
+        alt, az = re.split('[(,)]', body)[1:3]
+        skycoord = AltAz(alt=float(alt)*u.rad, dec=float(az)*u.rad)
+    else:
+        skycoord = get_body(body, time)
+    coords = skycoord.transform_to(AltAz(obstime=Time.now(), location=DWINGELOO_LOCATION))
     
     coords_unit = altaz_to_unit(coords.alt.degree, coords.az.degree)
     #coords_unit = altaz_to_unit(60.0, 180)
