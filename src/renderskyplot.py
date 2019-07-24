@@ -64,7 +64,7 @@ class RenderSkyPlot(RenderBase):
         self.bodies = [
                 Body("sun", "De zon", (0, 0), 'resources/sun.png'),
                 Body("moon", "De maan", (0, 0), 'resources/moon.png'),
-                Body("mars", "Mars", (0, 0), 'resources/mars.png'),
+                Body("radec(0.92934479, 0.95257568)", "Mars", (0, 0), 'resources/mars.png'),
                 Body("jupiter", "Jupiter", (0, 0), 'resources/jupiter.png')]
 
         # Create a transparent overlay
