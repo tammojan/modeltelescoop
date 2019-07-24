@@ -12,7 +12,7 @@ from astropy.time import Time
 import astropy.units as u
 from util import altaz_to_unit, unit_to_skyxy
 import re
-
+import numpy as np
 
 DWINGELOO_LOCATION = EarthLocation(lat="52d48m43.27", lon="6d23m46.21")
 
@@ -45,6 +45,19 @@ def get_body_skyxy(body: str):
     #print('Sun Alt: {:.1f}; Az: {:.1f}'.format(coords.alt.degree, coords.az.degree))
     return (round(coords_skyxy[0]), round(coords_skyxy[1]))
     
+
+def get_dist_milkyway(x: float, y: float):
+    # Get distance to milky way (milky way modelled as a straight line)
+    x1 = np.array([389., 976.])
+    x2 = np.array([703., 119.])
+    #angle = np.arctan((x2[1]-x1[1])/(x2[0]-x1[0]))
+    sin_a = -0.938958917510066;
+    cos_a = 0.3440292883292424;
+
+    x0 = np.array([x, y])
+    x0 = x0 - x1;
+    dist = sin_a * x0[0] - cos_a * x0[1]
+    return np.abs(dist)
 
 class RadioDataSet:
     

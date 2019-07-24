@@ -31,15 +31,29 @@ class RenderBar(RenderBase):
         # Load fonts
         title_font = pygame.font.Font('resources/font/Now-Bold.otf', 64)
         subtitle_font = pygame.font.Font('resources/font/Now-Regular.otf', 40)
-        
-        # Sun info
-        self.sun_title_text = title_font.render('De Zon', True, WHITE)
-        self.sun_mosaic = preload_image('resources/sun_mosaic.jpg')
-        
+ 
         self.title_text = title_font.render('Verken de radiosterrenhemel',
                                              True, WHITE)
         self.subtitle_text = subtitle_font.render('Beweeg de radiotelescoop om te richten',
                                              True, WHITE)
+        
+        # Milky Way info
+        self.milkyway_title_text = title_font.render('De Melkweg', True, WHITE)
+        self.milkyway_image = preload_image('resources/milkyway.jpg')
+        
+        self.milkyway_par1 = draw_text("De zon is een van de 100 miljard sterren in de "+\
+                "Melkweg. Omdat we er zelf in zitten, zien we de de Melkweg als een "+\
+                "band aan de hemel. Doordat het waterstofgas in de Melkweg "+\
+                "radiostraling uitzendt, kunnen radiotelescopen hem "+\
+                "in kaart brengen.", subtitle_font, WHITE, 485)
+        self.milkyway_par2 = draw_text("Met radiogolven is bevestigd "+\
+                "dat onze Melkweg een spiraalstructuur heeft. Dit is met de beste "+\
+                "optische telescopen (zoals de Hubble-ruimtetelescoop) niet mogelijk.",
+                subtitle_font, WHITE, 800)
+
+        # Sun info
+        self.sun_title_text = title_font.render('De Zon', True, WHITE)
+        self.sun_mosaic = preload_image('resources/sun_mosaic.jpg')
         
         self.sun_par1 = draw_text("De zon maakt licht op alle 'kleuren', " +\
                                   "dus ook radiogolven. Als de zon extra actief " +\
@@ -84,6 +98,18 @@ class RenderBar(RenderBase):
         
         screen.blit(self.title_text, (1100, 10))
         screen.blit(self.subtitle_text, (1100, 80))
+
+        if self.bar_mode == 0:
+            ### --- Milky Way --- ###
+            screen.blit(self.milkyway_title_text, (1300, 250))
+            pygame.draw.line(screen, WHITE, 
+                             (1100, 295), (1250, 295), 4)
+            pygame.draw.line(screen, WHITE, 
+                             (1650, 295), (1910, 295), 4)
+            screen.blit(self.milkyway_image, (1600, 370))
+            screen.blit(self.milkyway_par1, (1100, 350))
+            screen.blit(self.milkyway_par2, (1100, 750))
+
 
         if self.bar_mode == 1:
             ### --- Sun --- ###

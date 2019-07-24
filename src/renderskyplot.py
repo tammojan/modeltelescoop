@@ -12,6 +12,7 @@ import pygame
 
 from renderbase import RenderBase
 from radiodataset import get_body_skyxy
+from radiodataset import get_dist_milkyway
 
 from math import sqrt
 from enum import Enum
@@ -199,15 +200,20 @@ class RenderSkyPlot(RenderBase):
             Return a reference to the closest one. """
         # Threshold for minimum amount of pixels to consider being 'over' a body
         THRESHOLD = 20.0
+        THRESHOLD_MILKYWAY = 110.0
         
         closest_dist = 0.0
         
         dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
 
+        dist_milkyway = get_dist_milkyway(self.x, self.y)
+
         closest_dist = np.min(dists)
 
         if closest_dist <= THRESHOLD:
             return np.argmin(dists) + 1
+        elif dist_milkyway <= THRESHOLD_MILKYWAY:
+            return 0
         else:
             return None
         

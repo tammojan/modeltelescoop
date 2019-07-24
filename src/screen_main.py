@@ -22,7 +22,7 @@ def main():
     os.environ['DISPLAY'] = ':0'
     # Init logger
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s',
-                        handlers=[logging.FileHandler("/home/pi/screen_server.log"),
+                        handlers=[logging.FileHandler("screen_server.log"),
                                  logging.StreamHandler()])
 
 
