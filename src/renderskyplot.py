@@ -17,6 +17,8 @@ from radiodataset import get_dist_milkyway
 from math import sqrt
 from enum import Enum
 
+import yaml
+
 import datetime
 import threading
 
@@ -61,11 +63,13 @@ class RenderSkyPlot(RenderBase):
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
 
-        self.bodies = [
-                Body("sun", "De zon", (0, 0), 'resources/sun.png'),
-                Body("moon", "De maan", (0, 0), 'resources/moon.png'),
-                Body("radec(0.92934479, 0.95257568)", "Mars", (0, 0), 'resources/mars.png'),
-                Body("jupiter", "Jupiter", (0, 0), 'resources/jupiter.png')]
+        bodies_yaml = yaml.load(open("bodies.yml", "r"))
+        self.bodies = [Body(body_dict["coordinates"],
+                            body_dict["title"],
+                            (0,0),
+                            "resources/" + body_dict["sky_image"]
+                            )
+                        for body_dict in bodies_yaml]
 
         # Create a transparent overlay
         self.overlay = pygame.Surface(self.background.get_size(), 

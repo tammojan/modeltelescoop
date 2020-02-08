@@ -1,0 +1,17 @@
+--- # Bodies
+- coordinates: sun
+  bar_image: bar_sun.png
+  sky_image: sun.png
+  title: De zon
+- coordinates: moon
+  bar_image: bar_moon.png
+  sky_image: moon.png
+  title: De maan
+- coordinates: radec(0.92934479, 0.95257568)
+  bar_image: bar_mars.png
+  sky_image: mars.png
+  title: Mars
+- coordinates: jupiter
+  bar_image: bar_jupiter.png
+  sky_image: jupiter.png
+  title: Jupiter
