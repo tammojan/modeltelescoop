@@ -20,71 +20,17 @@ def preload_image(image_path):
 
 class RenderBar(RenderBase):
     def __init__(self):
-        
         self.bar_mode = None
+        self.bars = {}
+        self.bars[0] = preload_image('./resources/sidebars/milkyway.png')
+        self.bars[1] = preload_image('./resources/sidebars/sun.png')
+        self.bars[2] = preload_image('./resources/sidebars/moon.png')
+        self.bars[3] = preload_image('./resources/sidebars/mars.png')
+        self.bars[4] = preload_image('./resources/sidebars/jupiter.png')
+        self.bars[None] = preload_image('./resources/sidebars/empty.png')
         
-        self.stlogo = preload_image('./resources/stlogo.png')
-        self.astronlogo = preload_image('./resources/astronlogo.png')
         self.full_init = True
         self.changed_mode = True
-        
-        # Load fonts
-        title_font = pygame.font.Font('resources/font/Now-Bold.otf', 64)
-        subtitle_font = pygame.font.Font('resources/font/Now-Regular.otf', 40)
- 
-        self.title_text = title_font.render('Verken de radiosterrenhemel',
-                                             True, WHITE)
-        self.subtitle_text = subtitle_font.render('Beweeg de radiotelescoop om te richten',
-                                             True, WHITE)
-        
-        # Milky Way info
-        self.milkyway_title_text = title_font.render('De Melkweg', True, WHITE)
-        self.milkyway_image = preload_image('resources/milkyway.jpg')
-        
-        self.milkyway_par1 = draw_text("De zon is een van de 100 miljard sterren in de "+\
-                "Melkweg. Omdat we er zelf in zitten, zien we de de Melkweg als een "+\
-                "band aan de hemel. Doordat het waterstofgas in de Melkweg "+\
-                "radiostraling uitzendt, kunnen radiotelescopen hem "+\
-                "in kaart brengen.", subtitle_font, WHITE, 485)
-        self.milkyway_par2 = draw_text("Met radiogolven is bevestigd "+\
-                "dat onze Melkweg een spiraalstructuur heeft. Dit is met de beste "+\
-                "optische telescopen (zoals de Hubble-ruimtetelescoop) niet mogelijk.",
-                subtitle_font, WHITE, 800)
-
-        # Sun info
-        self.sun_title_text = title_font.render('De Zon', True, WHITE)
-        self.sun_mosaic = preload_image('resources/sun_mosaic.jpg')
-        
-        self.sun_par1 = draw_text("De zon maakt licht op alle 'kleuren', " +\
-                                  "dus ook radiogolven. Als de zon extra actief " +\
-                                  "is, komen er zulke sterke radiogolven vanaf dat " +\
-                                  "die satellieten van slag kunnen brengen. ",
-                                  subtitle_font, WHITE, 450)
-        self.sun_par2 = draw_text("Daarom is het belangrijk om de radiogolven " +\
-                                  "van de zon goed in de gaten te houden en te " +\
-                                  "voorspellen.", subtitle_font, WHITE, 800)
-        
-        # Moon info
-        self.moon_title_text = title_font.render('De Maan', True, WHITE)
-        self.moon_photo = preload_image('resources/fullmoon.jpg')
-        self.moon_par1 = draw_text("Radiozendamateurs gebruiken de maan om " +\
-                                   "contact te maken met de andere kant van de " +\
-                                   "aarde. Ze gebruiken de maan daarbij als " +\
-                                   "spiegel.", subtitle_font, WHITE, 450)
-        self.moon_par2 = draw_text("Dit kan alleen met heel gevoelige " +\
-                                   "apparatuur, omdat de maan 93% van het " +\
-                                   "signaal helemaal niet weerkaatst.\nHet " +\
-                                   "duurt 2.5 seconde voor het signaal terug " +\
-                                   "is, omdat de maan zo ver weg staat.",
-                                   subtitle_font, WHITE, 800)
-        
-        # Mars info
-        self.mars_title_text = title_font.render('Mars', True, WHITE)
-        self.mars_photo = preload_image('resources/mars_photo.jpg')
-        
-        # Jupiter info
-        self.jupiter_title_text = title_font.render('Jupiter', True, WHITE)
-        self.jupiter_photo = preload_image('resources/jupiter_photo.jpg')
         
     def render(self, screen: pygame.Surface):
         rects_to_update = []
@@ -93,117 +39,12 @@ class RenderBar(RenderBase):
         if self.full_init:
             rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))
 
-        screen.blit(self.stlogo, (1200, 970))
-        screen.blit(self.astronlogo, (1500, 970))
-        
-        screen.blit(self.title_text, (1100, 10))
-        screen.blit(self.subtitle_text, (1100, 80))
+        screen.blit(self.bars[self.bar_mode], (1082, 0))
 
-        if self.bar_mode == 0:
-            ### --- Milky Way --- ###
-            screen.blit(self.milkyway_title_text, (1300, 250))
-            pygame.draw.line(screen, WHITE, 
-                             (1100, 295), (1250, 295), 4)
-            pygame.draw.line(screen, WHITE, 
-                             (1650, 295), (1910, 295), 4)
-            screen.blit(self.milkyway_image, (1600, 370))
-            screen.blit(self.milkyway_par1, (1100, 350))
-            screen.blit(self.milkyway_par2, (1100, 750))
-
-
-        if self.bar_mode == 1:
-            ### --- Sun --- ###
-            screen.blit(self.sun_title_text, (1600, 250))
-            pygame.draw.line(screen, WHITE, 
-                             (1100, 295), (1590, 295), 4)
-            pygame.draw.line(screen, WHITE, 
-                             (1800, 295), (1910, 295), 4)
-            screen.blit(self.sun_mosaic, (1600, 370))
-            
-            screen.blit(self.sun_par1, (1100, 350))
-            screen.blit(self.sun_par2, (1100, 700))
-            
-            ### --- Moon --- ###
-        if self.bar_mode == 2:
-            screen.blit(self.moon_title_text, (1570, 250))
-            pygame.draw.line(screen, WHITE, 
-                             (1100, 295), (1560, 295), 4)
-            pygame.draw.line(screen, WHITE, 
-                             (1820, 295), (1910, 295), 4)
-            
-            screen.blit(self.moon_photo, (1150, 370))
-            
-            screen.blit(self.moon_par1, (1500, 350))
-            screen.blit(self.moon_par2, (1100, 650))
-            
-            ### --- Mars --- ###
-        if self.bar_mode == 3:
-            screen.blit(self.mars_title_text, (1668, 250))
-            pygame.draw.line(screen, WHITE, 
-                             (1100, 295), (1650, 295), 4)
-            pygame.draw.line(screen, WHITE, 
-                             (1820, 295), (1910, 295), 4)
-            
-            screen.blit(self.mars_photo, (1200, 330))
-            
-            ### --- Jupiter --- ###
-        if self.bar_mode == 4:
-            screen.blit(self.jupiter_title_text, (1610, 250))
-            pygame.draw.line(screen, WHITE, 
-                             (1100, 295), (1590, 295), 4)
-            pygame.draw.line(screen, WHITE, 
-                             (1820, 295), (1910, 295), 4)
-            
-            screen.blit(self.title_text, (1100, 10))
-            screen.blit(self.subtitle_text, (1100, 80))
-            self.full_init = False
         if self.changed_mode:
             rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 200, 820, 1080))
+            screen.blit(self.bars[self.bar_mode], (1082, 0))
 
-            if self.bar_mode == 1:
-                ### --- Sun --- ###
-                screen.blit(self.sun_title_text, (1600, 250))
-                pygame.draw.line(screen, WHITE, 
-                                 (1100, 295), (1590, 295), 4)
-                pygame.draw.line(screen, WHITE, 
-                                 (1800, 295), (1910, 295), 4)
-                screen.blit(self.sun_mosaic, (1600, 370))
-                
-                screen.blit(self.sun_par1, (1100, 350))
-                screen.blit(self.sun_par2, (1100, 700))
-                
-                ### --- Moon --- ###
-            if self.bar_mode == 2:
-                screen.blit(self.moon_title_text, (1570, 250))
-                pygame.draw.line(screen, WHITE, 
-                                 (1100, 295), (1560, 295), 4)
-                pygame.draw.line(screen, WHITE, 
-                                 (1820, 295), (1910, 295), 4)
-                
-                screen.blit(self.moon_photo, (1150, 370))
-                
-                screen.blit(self.moon_par1, (1500, 350))
-                screen.blit(self.moon_par2, (1100, 650))
-                
-                ### --- Mars --- ###
-            if self.bar_mode == 3:
-                screen.blit(self.mars_title_text, (1668, 250))
-                pygame.draw.line(screen, WHITE, 
-                                 (1100, 295), (1650, 295), 4)
-                pygame.draw.line(screen, WHITE, 
-                                 (1820, 295), (1910, 295), 4)
-                
-                screen.blit(self.mars_photo, (1200, 330))
-                
-                ### --- Jupiter --- ###
-            if self.bar_mode == 4:
-                screen.blit(self.jupiter_title_text, (1610, 250))
-                pygame.draw.line(screen, WHITE, 
-                                 (1100, 295), (1590, 295), 4)
-                pygame.draw.line(screen, WHITE, 
-                                 (1820, 295), (1910, 295), 4)
-                
-                screen.blit(self.jupiter_photo, (1200, 330))
             self.changed_mode = False
             
         return rects_to_update
