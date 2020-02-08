@@ -113,22 +113,10 @@ class RenderSkyPlot(RenderBase):
             reticle.inflate_ip(10, 10)
             rects_to_update.append(reticle)
             
-            # Draw the sun (we don't really care about the location in 
+            # Draw the objects (we don't really care about the location in 
             # the first frame)
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[0].img, (0, 0)))
-            
-            # Draw the moon
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[1].img, (0, 0)))
-            
-            # Draw Mars
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[2].img, (0, 0)))
-            
-            # Draw jupiter
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[3].img, (0, 0)))
+            for body in self.bodies:
+                rects_to_update.append(self.overlay.blit(body.img, (0, 0)))
 
             # Blit the background image
             screen.blit(self.background, (0, 0))            
