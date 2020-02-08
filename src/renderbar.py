@@ -22,12 +22,12 @@ class RenderBar(RenderBase):
     def __init__(self):
         self.bar_mode = None
         self.bars = {}
-        self.bars[0] = preload_image('./resources/sidebars/milkyway.png')
-        self.bars[1] = preload_image('./resources/sidebars/sun.png')
-        self.bars[2] = preload_image('./resources/sidebars/moon.png')
-        self.bars[3] = preload_image('./resources/sidebars/mars.png')
-        self.bars[4] = preload_image('./resources/sidebars/jupiter.png')
-        self.bars[None] = preload_image('./resources/sidebars/empty.png')
+        self.bars[0] = preload_image('./resources/bar_milkyway.png')
+        self.bars[1] = preload_image('./resources/bar_sun.png')
+        self.bars[2] = preload_image('./resources/bar_moon.png')
+        self.bars[3] = preload_image('./resources/bar_mars.png')
+        self.bars[4] = preload_image('./resources/bar_jupiter.png')
+        self.bars[None] = preload_image('./resources/bar_empty.png')
         
         self.full_init = True
         self.changed_mode = True
