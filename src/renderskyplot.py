@@ -203,9 +203,9 @@ class RenderSkyPlot(RenderBase):
         closest_dist = np.min(dists)
 
         if closest_dist <= THRESHOLD:
-            return np.argmin(dists) + 1
+            return self.bodies[np.argmin(dists)].title
         elif dist_milkyway <= THRESHOLD_MILKYWAY:
-            return 0
+            return "De Melkweg"
         else:
             return None
         

@@ -2,15 +2,14 @@
 """
 Created on Thu Jun 27 11:16:27 2019
 
-@author: S.P. van der Linden
+@author: S.P. van der Linden and T.J. Dijkema
 @description: Rendering code for righthand bar
 """
 
 import pygame
 
 from renderbase import RenderBase
-
-from util import draw_text
+import yaml
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0, 255)
@@ -22,12 +21,12 @@ class RenderBar(RenderBase):
     def __init__(self):
         self.bar_mode = None
         self.bars = {}
-        self.bars[0] = preload_image('./resources/bar_milkyway.png')
-        self.bars[1] = preload_image('./resources/bar_sun.png')
-        self.bars[2] = preload_image('./resources/bar_moon.png')
-        self.bars[3] = preload_image('./resources/bar_mars.png')
-        self.bars[4] = preload_image('./resources/bar_jupiter.png')
+        self.bars["De Melkweg"] = preload_image('./resources/bar_milkyway.png')
         self.bars[None] = preload_image('./resources/bar_empty.png')
+
+        bodies_yaml = yaml.load(open("bodies.yml", "r"))
+        for body in bodies_yaml:
+            self.bars[body["title"]] = preload_image("./resources/" + body["bar_image"])
         
         self.full_init = True
         self.changed_mode = True
@@ -49,7 +48,7 @@ class RenderBar(RenderBase):
             
         return rects_to_update
                 
-    def set_body_of_interest(self, body: int):
+    def set_body_of_interest(self, body):
         if body != self.bar_mode:
             self.bar_mode = body
             self.changed_mode = True
