@@ -7,15 +7,11 @@
   bar_image: bar_moon.png
   sky_image: moon.png
   title: De maan
-- coordinates: mars
-  bar_image: bar_mars.png
-  sky_image: mars.png
-  title: Mars
-- coordinates: jupiter
-  bar_image: bar_jupiter.png
-  sky_image: jupiter.png
-  title: Jupiter
 - coordinates: radec(0.9293,0.9525)
   bar_image: bar_pulsar.png
   sky_image: pulsar.png
   title: Pulsar B0329+54
+- coordinates: radec(0.771700,1.0282)
+  bar_image: bar_dwingeloo1.png
+  sky_image: pulsar.png
+  title: Dwingeloo 1 & 2
