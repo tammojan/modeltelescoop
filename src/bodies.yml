@@ -15,3 +15,11 @@
   bar_image: bar_dwingeloo1.png
   sky_image: pulsar.png
   title: Dwingeloo 1 & 2
+- coordinates: radec(5.23368,0.7109409)
+  bar_image: bar_cyga.png
+  sky_image: pulsar.png
+  title: Cygnus A
+- coordinates: altaz(0, 20)
+  bar_image: bar_tvtoren.png
+  sky_image: pulsar.png
+  title: Zendmast Hoogersmilde
