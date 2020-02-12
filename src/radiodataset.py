@@ -32,7 +32,7 @@ def get_body_skyxy(body: str):
         skycoord = SkyCoord(ra=float(ra)*u.rad, dec=float(dec)*u.rad)
     elif "altaz" in body:
         alt, az = re.split('[(,)]', body)[1:3]
-        skycoord = AltAz(alt=float(alt)*u.rad, dec=float(az)*u.rad)
+        skycoord = AltAz(alt=float(alt)*u.rad, az=float(az)*u.rad, location=DWINGELOO_LOCATION, obstime=Time.now())
     else:
         skycoord = get_body(body, time)
     coords = skycoord.transform_to(AltAz(obstime=Time.now(), location=DWINGELOO_LOCATION))
