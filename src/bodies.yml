@@ -24,6 +24,6 @@
   sky_image: mars.png
   title: Zendmast Hoogersmilde
 - coordinates: altaz(50, 298)
-  bar_image: andromedanevel.png
+  bar_image: andromeda.png
   sky_image: empty.png
   title: Andromedanevel
