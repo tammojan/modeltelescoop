@@ -19,7 +19,7 @@
   bar_image: bar_cyga.png
   sky_image: mars.png
   title: Cygnus A
-- coordinates: altaz(0, 20)
+- coordinates: altaz(0, 289)
   bar_image: bar_tvtoren.png
   sky_image: mars.png
   title: Zendmast Hoogersmilde
