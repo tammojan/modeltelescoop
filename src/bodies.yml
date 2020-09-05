@@ -23,3 +23,7 @@
   bar_image: bar_tvtoren.png
   sky_image: mars.png
   title: Zendmast Hoogersmilde
+- coordinates: altaz(50, 298)
+  bar_image: andromedanevel.png
+  sky_image: empty.png
+  title: Andromedanevel
