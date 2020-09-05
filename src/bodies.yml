@@ -1,25 +1,25 @@
 --- # Bodies
-- coordinates: sun
+- coordinates: altaz(27, 80)
   bar_image: bar_sun.png
   sky_image: sun.png
   title: De zon
-- coordinates: moon
+- coordinates: altaz(45, 45)
   bar_image: bar_moon.png
   sky_image: moon.png
   title: De maan
-- coordinates: radec(0.9293,0.9525)
+- coordinates: altaz(57, 316)
   bar_image: bar_pulsar.png
-  sky_image: pulsar.png
+  sky_image: mars.png
   title: Pulsar B0329+54
-- coordinates: radec(0.771700,1.0282)
+- coordinates: altaz(50, 174)
   bar_image: bar_dwingeloo1.png
-  sky_image: pulsar.png
+  sky_image: mars.png
   title: Dwingeloo 1 & 2
-- coordinates: radec(5.23368,0.7109409)
+- coordinates: altaz(70, 0)
   bar_image: bar_cyga.png
-  sky_image: pulsar.png
+  sky_image: mars.png
   title: Cygnus A
 - coordinates: altaz(0, 20)
   bar_image: bar_tvtoren.png
-  sky_image: pulsar.png
+  sky_image: mars.png
   title: Zendmast Hoogersmilde
