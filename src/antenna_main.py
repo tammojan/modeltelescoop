@@ -51,7 +51,7 @@ def main():
     sensor_azi.enable()
     sensor_alt.enable()
 
-    sleep(20) # Wait for screen to start
+    sleep(30) # Wait for screen to start
 
     # Create the client socket
     s = None
@@ -64,7 +64,7 @@ def main():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
         try:
             print("Trying to connect")
-            s.connect(('192.168.178.24', 7272))
+            s.connect(('192.168.178.68', 7272))
         except (OSError, ConnectionRefusedError) as e:
             # We got an error, print out what, then sleep and try again
             print("Connection failed (attempt {}): {}".format(counter, e))
