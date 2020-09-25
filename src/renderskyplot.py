@@ -63,6 +63,7 @@ class RenderSkyPlot(RenderBase):
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
+        self.reticle_surface = preload_image_alpha('resources/reticle.png')
 
         bodies_yaml = yaml.load(open("bodies.yml", "r"))
         self.bodies = [Body(body_dict.get("coordinates", "altaz(45, 45)"),
@@ -135,18 +136,22 @@ class RenderSkyPlot(RenderBase):
             # This is not the first frame, and we need to update the location
             # of the circular window.
 
-            # Draw the reticle
-            reticle = pygame.draw.circle(self.overlay, RED,
-                                         (self.x, self.y), 20, 2)
+            # Draw the reticle to get the rect of the reticle
+            #reticle = pygame.draw.circle(self.overlay, RED,
+            #                             (self.x, self.y), 20, 2)
+                    
+            # Compute the new area for the reticle
+            reticle = pygame.Rect(self.x - self.reticle_surface.get_width()/2,
+                                  self.y - self.reticle_surface.get_height()/2,
+                                  self.reticle_surface.get_width(),
+                                  self.reticle_surface.get_height());
             
             # Slightly inflate the reticle rect, as otherwise it does not
             # account for the last pixel column (off-by-one bug in pygame?)
-            reticle.inflate_ip(10, 10)
+            #reticle.inflate_ip(10, 10)
             
             # Create a union'd rect to limit the amount of redrawing of pixels
-            reticle = reticle.union(self.last_updated_rects[0])
-            
-            rects_to_update.append(reticle)
+            rects_to_update.append(reticle.union(self.last_updated_rects[0]))
             
             # Compute the entire updated area: the bounding box of the circle's
             # last location and the circle's current location.
@@ -165,7 +170,8 @@ class RenderSkyPlot(RenderBase):
                     rects_to_update.append([])
             
             # Finally, redraw the circle again to make sure it is on top
-            pygame.draw.circle(self.overlay, RED, (self.x, self.y), 20, 2)
+            #pygame.draw.circle(self.overlay, RED, (self.x, self.y), 20, 2)
+            self.overlay.blit(self.reticle_surface, reticle)
             
             now = datetime.datetime.now()
             time_text = self.time_font.render("LIVE: " + now.strftime('%T %d-%m-%Y'), True, RED)

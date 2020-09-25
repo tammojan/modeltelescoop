@@ -18,8 +18,8 @@ import sys
 
 from util import altaz_to_unit, unit_to_skyxy
 
-
-
+SET_STANDBY_EVENT = pygame.USEREVENT+2
+STANDBY_TIMEOUT = 120 # Amount of time before the standby screen ('screen saver') is activated
 
 def main():
     os.environ['DISPLAY'] = ':0'
@@ -28,7 +28,7 @@ def main():
                         handlers=[logging.FileHandler("screen_server.log"),
                                  logging.StreamHandler()])
 
-    if len(sys.argv) > 1 and sys.argv[1] == "-debug":
+    if len(sys.argv) > 1 and "debug" in sys.argv[1]:
         DEBUG = True
     else:
         DEBUG = False
@@ -82,6 +82,8 @@ def main():
     # Start a timer (= repeating event) for updating the sky coordinates
     # every 60s
     pygame.time.set_timer(UPDATE_COORDS_EVENT, 60000)
+    # And a second one to show the 'screen saver' when the antenna is idle for too long
+    pygame.time.set_timer(SET_STANDBY_EVENT, STANDBY_TIMEOUT * 1000)
     
     # Post the event into the queue to make sure it initialises at startup
     pygame.event.post(pygame.event.Event(UPDATE_COORDS_EVENT))
@@ -94,6 +96,7 @@ def main():
     
     # A flag which indicates whether we have rendered the first frame
     first_frame = True
+    standby_active = False
     
     last_altaz = (0.0, 0.0)
     
@@ -127,8 +130,9 @@ def main():
         
         # Get the latest altaz values from the antenna interface
         altaz = server.get_last_altaz()
-        if not last_altaz == altaz:
+        if abs(last_altaz[0] - altaz[0]) > 1 or abs(last_altaz[1] - altaz[1]) > 1:
             last_altaz = altaz
+            
             # Update the data if the AltAz changed
             #coords = data.altaz_to_skycoord(altaz[0], altaz[1])
             #linedata = data.get_line_data(coords)
@@ -149,8 +153,11 @@ def main():
                 
         # Render the scene with the new data
         #rects_to_update.append(lineplot.render(screen))
-        rects_to_update.append(skyplot.render(screen))
-        rects_to_update.append(sidebar.render(screen))
+        if standby_active:
+            pass
+        else:
+            rects_to_update.append(skyplot.render(screen))
+            rects_to_update.append(sidebar.render(screen))
         
         if first_frame:
             # If its the first frame, we need to flip the entire screen buffer
@@ -162,7 +169,7 @@ def main():
             pygame.display.update(rects_to_update)
         rects_to_update.clear()
         
-        # Block the display for the amount of time required to get max 40 FPS
+        # Block the display for the amount of time required to get max 60 FPS
         clock.tick(60)
        
     # Quit gracefully
