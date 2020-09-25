@@ -12,8 +12,11 @@ import pygame
 
 from renderbase import RenderBase
 from radiodataset import get_body_skyxy
+from radiodataset import get_dist_milkyway
 
 from math import sqrt
+
+import yaml
 
 import datetime
 import threading
@@ -59,11 +62,13 @@ class RenderSkyPlot(RenderBase):
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
 
-        self.bodies = [
-                Body("sun", "De zon", (0, 0), 'resources/sun.png'),
-                Body("moon", "De maan", (0, 0), 'resources/moon.png'),
-                Body("mars", "Mars", (0, 0), 'resources/mars.png'),
-                Body("jupiter", "Jupiter", (0, 0), 'resources/jupiter.png')]
+        bodies_yaml = yaml.load(open("bodies.yml", "r"))
+        self.bodies = [Body(body_dict["coordinates"],
+                            body_dict["title"],
+                            (0,0),
+                            "resources/" + body_dict["sky_image"]
+                            )
+                        for body_dict in bodies_yaml]
 
         # Create a transparent overlay
         self.overlay = pygame.Surface(self.background.get_size(), 
@@ -111,22 +116,10 @@ class RenderSkyPlot(RenderBase):
             reticle.inflate_ip(10, 10)
             rects_to_update.append(reticle)
             
-            # Draw the sun (we don't really care about the location in 
+            # Draw the objects (we don't really care about the location in 
             # the first frame)
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[0].img, (0, 0)))
-            
-            # Draw the moon
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[1].img, (0, 0)))
-            
-            # Draw Mars
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[2].img, (0, 0)))
-            
-            # Draw jupiter
-            rects_to_update.append(self.overlay.blit(
-                    self.bodies[3].img, (0, 0)))
+            for body in self.bodies:
+                rects_to_update.append(self.overlay.blit(body.img, (0, 0)))
 
             # Blit the background image
             screen.blit(self.background, (0, 0))            
@@ -198,15 +191,20 @@ class RenderSkyPlot(RenderBase):
             Return a reference to the closest one. """
         # Threshold for minimum amount of pixels to consider being 'over' a body
         THRESHOLD = 20.0
+        THRESHOLD_MILKYWAY = 110.0
         
         closest_dist = 0.0
         
         dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
 
+        dist_milkyway = get_dist_milkyway(self.x, self.y)
+
         closest_dist = np.min(dists)
 
         if closest_dist <= THRESHOLD:
-            return np.argmin(dists) + 1
+            return self.bodies[np.argmin(dists)].title
+        elif dist_milkyway <= THRESHOLD_MILKYWAY:
+            return "De Melkweg"
         else:
             return None
         

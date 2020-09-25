@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 @author: S.P. van der Linden
@@ -10,6 +10,8 @@ import socket
 import json
 from time import sleep
 import numpy as np
+import sys
+
 
 def send_altaz(sock: socket, alt: float, az: float):
     """ Send an altaz pair to the connected server through the socket"""
@@ -49,40 +51,38 @@ def main():
     sensor_azi.enable()
     sensor_alt.enable()
 
+    sleep(30) # Wait for screen to start
+
     # Create the client socket
     s = None
 
     # Connect to the server via port 7272, with 50 tries
     counter = 1
     while True:
-      if s:
-          print("Socket exists, closing")
-          s.close()
-      else:
-          s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-      try:
+        if s:
+            s.close()
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
         try:
             print("Trying to connect")
-            s.connect(('192.168.178.24', 7272))
-        except OSError as e:
+            s.connect(('192.168.178.68', 7272))
+        except (OSError, ConnectionRefusedError) as e:
             # We got an error, print out what, then sleep and try again
             print("Connection failed (attempt {}): {}".format(counter, e))
             sleep(5)
             counter = counter + 1
             continue
         with s:
-          print('Connected, starting normal operation.')
-          while True:
-              azimuth = convert_azimuth(sensor_azi.get_angle())
-              altitude = convert_altitude(sensor_alt.get_angle())
-              send_altaz(s, altitude, azimuth)
-              sleep(0.1)
-      except IOError as e:
-          print(e)
-          print("Broken pipe, reconnecting")
-      except KeyboardInterrupt:
-          print('Quitting...')
-          break
+            print('Connected, starting normal operation.')
+            while True:
+                try:
+                    azimuth = convert_azimuth(sensor_azi.get_angle())
+                    altitude = convert_altitude(sensor_alt.get_angle())
+                    #print(int(altitude), int(azimuth))
+                    send_altaz(s, altitude, azimuth)
+                    sleep(0.1)
+                except KeyboardInterrupt:
+                    print('Quitting...')
+                    sys.exit(1)
 
     sensor_azi.finish()
     sensor_alt.finish()

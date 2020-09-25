@@ -7,20 +7,41 @@ Created on Tue May 21 14:14:28 2019
 
 #from astropy.io import fits
 import astropy.units as u
-from astropy.coordinates import EarthLocation, AltAz, Galactic, get_body
-from astropy.time import Time
+#from astropy.coordinates import EarthLocation, AltAz, Galactic, get_body, SkyCoord
+#from astropy.time import Time
 from util import altaz_to_unit, unit_to_skyxy
+import re
+import numpy as np
 
-
-DWINGELOO_LOCATION = EarthLocation(lat="52d48m43.27", lon="6d23m46.21")
+#DWINGELOO_LOCATION = EarthLocation(lat="52d48m43.27", lon="6d23m46.21")
 
 
 def get_body_skyxy(body: str):
+    """
+    Get xy coordinates for a sky body
 
-    coords = get_body(body, Time.now()) \
-    .transform_to(AltAz(obstime=Time.now(), location=DWINGELOO_LOCATION))
-    
-    coords_unit = altaz_to_unit(coords.alt.degree, coords.az.degree)
+    body can be:
+       radec(0.4,0.5): ra and dec in radians
+       altaz(0.4,0.5): alt and azimuth in radians
+       name: something that is accepted by get_body (e.g. 'sun', 'moon', 'jupiter')
+    """
+    if "radec" in body:
+        time = Time.now()
+        ra, dec = re.split('[(,)]', body)[1:3]
+        skycoord = SkyCoord(ra=float(ra)*u.rad, dec=float(dec)*u.rad)
+        coords = skycoord.transform_to(AltAz(obstime=Time.now(), location=DWINGELOO_LOCATION))
+        alt, az = coords.alt.degree, coords.az.degree
+    elif "altaz" in body:
+        alt, az = re.split('[(,)]', body)[1:3]
+        alt = float(alt)
+        az = float(az)
+    else:
+        time = Time.now()
+        skycoord = get_body(body, time)
+        coords = skycoord.transform_to(AltAz(obstime=Time.now(), location=DWINGELOO_LOCATION))
+        alt, az = coords.alt.degree, coords.az.degree
+
+    coords_unit = altaz_to_unit(alt, az)
     #coords_unit = altaz_to_unit(60.0, 180)
     
     
@@ -28,6 +49,19 @@ def get_body_skyxy(body: str):
     #print('Sun Alt: {:.1f}; Az: {:.1f}'.format(coords.alt.degree, coords.az.degree))
     return (round(coords_skyxy[0]), round(coords_skyxy[1]))
     
+
+def get_dist_milkyway(x: float, y: float):
+    # Get distance to milky way (milky way modelled as a straight line)
+    x1 = np.array([389., 976.])
+    x2 = np.array([703., 119.])
+    #angle = np.arctan((x2[1]-x1[1])/(x2[0]-x1[0]))
+    sin_a = -0.938958917510066;
+    cos_a = 0.3440292883292424;
+
+    x0 = np.array([x, y])
+    x0 = x0 - x1;
+    dist = sin_a * x0[0] - cos_a * x0[1]
+    return np.abs(dist)
 
 class RadioDataSet:
     
