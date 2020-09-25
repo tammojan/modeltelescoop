@@ -2,6 +2,7 @@
 - coordinates: altaz(27, 80)
   bar_image: bar_sun.png
   sky_image: sun.png
+  sound: noise.ogg
   title: De zon
 - coordinates: altaz(45, 45)
   bar_image: bar_moon.png

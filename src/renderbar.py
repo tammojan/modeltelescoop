@@ -28,7 +28,6 @@ class Bar:
             self.preloaded_sound = None
         else:
             self.sound = './resources/sound/' + sound
-            print(self.sound)
             self.preloaded_sound = pygame.mixer.Sound(self.sound)
 
 
