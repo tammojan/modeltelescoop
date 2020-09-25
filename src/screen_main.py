@@ -54,12 +54,17 @@ def main():
     # Create the clock object (for FPS control)
     clock = pygame.time.Clock()
     
+
+    
     # Sky plot creation
     skyplot = RenderSkyPlot()
     
     # Side bar creation
     sidebar = RenderBar()
     
+    # Start the sound mixer
+    pygame.mixer.init()
+
     # Line plot creation
     #data = RadioDataSet()
        

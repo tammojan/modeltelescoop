@@ -43,12 +43,13 @@ def preload_image_alpha(image_path):
 
 
 class Body:
-    def __init__(self, name, title, xy, img_url):
+    def __init__(self, name, title, xy, img_url, sound):
         self.name = name
         self.title = title
         self.xy = xy
         self.img_url = img_url
         self.img = preload_image_alpha(img_url)
+        self.sound = sound
 
 
 # Main class
@@ -64,10 +65,11 @@ class RenderSkyPlot(RenderBase):
         self.background = preload_image('resources/panorama.png')
 
         bodies_yaml = yaml.load(open("bodies.yml", "r"))
-        self.bodies = [Body(body_dict["coordinates"],
-                            body_dict["title"],
+        self.bodies = [Body(body_dict.get("coordinates", "altaz(45, 45)"),
+                            body_dict.get("title", "<< No Title >>"),
                             (0,0),
-                            "resources/" + body_dict["sky_image"]
+                            "resources/" + body_dict["sky_image"],
+                            body_dict.get("sound", "")
                             )
                         for body_dict in bodies_yaml]
 
