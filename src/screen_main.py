@@ -18,6 +18,9 @@ import sys
 
 from util import altaz_to_unit, unit_to_skyxy
 
+
+
+
 def main():
     os.environ['DISPLAY'] = ':0'
     # Init logger
@@ -25,6 +28,10 @@ def main():
                         handlers=[logging.FileHandler("screen_server.log"),
                                  logging.StreamHandler()])
 
+    if len(sys.argv) > 1 and sys.argv[1] == "-debug":
+        DEBUG = True
+    else:
+        DEBUG = False
 
     # PyGame initialisation
     pygame.init()
@@ -34,10 +41,15 @@ def main():
     server.listen()
     
     # Create a window or display
-    screen = pygame.display.set_mode((1920, 1080), 
-                                     pygame.FULLSCREEN |
-                                     pygame.DOUBLEBUF |
-                                     pygame.HWACCEL)
+    if DEBUG:
+        screen = pygame.display.set_mode((1920, 1080), 
+                                         pygame.DOUBLEBUF |
+                                         pygame.HWACCEL)
+    else:
+        screen = pygame.display.set_mode((1920, 1080), 
+                                         pygame.FULLSCREEN |
+                                         pygame.DOUBLEBUF |
+                                         pygame.HWACCEL)
             
     # Create the clock object (for FPS control)
     clock = pygame.time.Clock()
@@ -64,7 +76,8 @@ def main():
     #lineplot = RenderLinePlot(x, linedata, plot_location)
     
     # Set the mouse to invisible
-    pygame.mouse.set_visible(False)
+    if not DEBUG:
+        pygame.mouse.set_visible(False)
     
     # Start a timer (= repeating event) for updating the sky coordinates
     # every 60s
