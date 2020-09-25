@@ -153,11 +153,11 @@ def main():
                 
         # Render the scene with the new data
         #rects_to_update.append(lineplot.render(screen))
-        if standby_active:
-            pass
-        else:
-            rects_to_update.append(skyplot.render(screen))
-            rects_to_update.append(sidebar.render(screen))
+        #if standby_active:
+        #    pass
+        #else:
+        rects_to_update.append(skyplot.render(screen))
+        rects_to_update.append(sidebar.render(screen))
         
         if first_frame:
             # If its the first frame, we need to flip the entire screen buffer
