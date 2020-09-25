@@ -6,7 +6,7 @@
 - coordinates: altaz(45, 45)
   bar_image: bar_moon.png
   sky_image: moon.png
-  sound: smallstep.ogg
+  sound: moonbounce.ogg
   title: De maan
 - coordinates: altaz(57, 316)
   bar_image: bar_pulsar.png
