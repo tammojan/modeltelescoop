@@ -27,7 +27,7 @@
 - coordinates: altaz(0, 289)
   bar_image: bar_tvtoren.png
   sky_image: mars.png
-  sound: radio.ogg
+  sound: radio2.ogg
   title: Zendmast Hoogersmilde
 - coordinates: altaz(50, 298)
   bar_image: andromeda.png
