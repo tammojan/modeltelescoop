@@ -3,6 +3,7 @@
   bar_image: bar_sun.png
   sky_image: sun.png
   sound: noise.ogg
+  soundloop: true
   title: De zon
 - coordinates: altaz(45, 45)
   bar_image: bar_moon.png
@@ -13,6 +14,7 @@
   bar_image: bar_pulsar.png
   sky_image: mars.png
   sound: pulsar.ogg
+  soundloop: true
   title: Pulsar B0329+54
 - coordinates: altaz(50, 174)
   bar_image: bar_dwingeloo1.png

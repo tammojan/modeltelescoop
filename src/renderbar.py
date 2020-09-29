@@ -17,7 +17,7 @@ FADE_TIME = 500  # Sound fade-in/out time in ms
 
 
 class Bar:
-    def __init__(self, image, sound):
+    def __init__(self, image, sound, soundloop=False):
         if not image:
             self.image = './resources/bar_empty.png'
         else:
@@ -29,7 +29,7 @@ class Bar:
         else:
             self.sound = './resources/sound/' + sound
             self.preloaded_sound = pygame.mixer.Sound(self.sound)
-
+            self.soundloop = -1 if soundloop else 0
 
 def preload_image(image_path):
     return pygame.image.load(image_path).convert()
@@ -43,7 +43,7 @@ class RenderBar(RenderBase):
 
         bodies_yaml = yaml.load(open("bodies.yml", "r"))
         for body in bodies_yaml:
-            self.bars[body["title"]] = Bar(body.get("bar_image", "bar_empty.png"), body.get("sound", ""))
+            self.bars[body["title"]] = Bar(body.get("bar_image", "bar_empty.png"), body.get("sound", ""), soundloop=body.get("soundloop", False))
         
         self.full_init = True
         self.changed_mode = True
@@ -70,7 +70,7 @@ class RenderBar(RenderBase):
             # Update sounds
             if self.bars[self.bar_mode].preloaded_sound is not None:
                 self.current_sound = self.bars[self.bar_mode].preloaded_sound
-                self.current_sound.play(fade_ms=FADE_TIME)
+                self.current_sound.play(fade_ms=FADE_TIME, loops=self.bars[self.bar_mode].soundloop)
             
             self.changed_mode = False
             
