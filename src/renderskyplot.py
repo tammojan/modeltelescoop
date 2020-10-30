@@ -79,7 +79,7 @@ class RenderSkyPlot(RenderBase):
                                       pygame.SRCALPHA)
         self.overlay.fill(BLACK)
         
-        self.time_font = pygame.font.SysFont('Arial', 18)
+        self.time_font = pygame.font.SysFont('Arial', 28)
         self.time_font.set_bold(True)
         
         self.last_updated_rects = [ [], [], [], [], [] ]
@@ -160,8 +160,8 @@ class RenderSkyPlot(RenderBase):
             self.overlay.blit(self.reticle_surface, reticle)
             
             now = datetime.datetime.now()
-            time_text = self.time_font.render("Tijd: " + now.strftime('%T %d-%m-%Y'), True, RED)
-            rects_to_update.append(self.overlay.blit(time_text, (830, 1050)))
+            time_text = self.time_font.render(now.strftime('%T %d-%m-%Y'), True, RED)
+            rects_to_update.append(self.overlay.blit(time_text, (820, 1050)))
             
             # Update only the changed areas for performance
             for rect_to_update in rects_to_update+self.last_updated_rects:
