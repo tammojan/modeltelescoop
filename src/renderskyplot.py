@@ -78,8 +78,6 @@ class RenderSkyPlot(RenderBase):
         self.overlay = pygame.Surface(self.background.get_size(), 
                                       pygame.SRCALPHA)
         self.overlay.fill(BLACK)
-
-        #self.__update_bodies__()
         
         self.time_font = pygame.font.SysFont('Arial', 18)
         self.time_font.set_bold(True)
@@ -117,7 +115,7 @@ class RenderSkyPlot(RenderBase):
                                               (self.x, self.y), 20, 2)
             # Slightly inflate the reticle, as otherwise it does not account
             # for the last pixel column (off-by-one bug in pygame?)
-            reticle.inflate_ip(10, 10)
+            #reticle.inflate_ip(10, 10)
             rects_to_update.append(reticle)
             
             # Draw the objects (we don't really care about the location in 
@@ -135,10 +133,6 @@ class RenderSkyPlot(RenderBase):
         else:
             # This is not the first frame, and we need to update the location
             # of the circular window.
-
-            # Draw the reticle to get the rect of the reticle
-            #reticle = pygame.draw.circle(self.overlay, RED,
-            #                             (self.x, self.y), 20, 2)
                     
             # Compute the new area for the reticle
             reticle = pygame.Rect(self.x - self.reticle_surface.get_width()/2,
@@ -148,46 +142,34 @@ class RenderSkyPlot(RenderBase):
             
             # Slightly inflate the reticle rect, as otherwise it does not
             # account for the last pixel column (off-by-one bug in pygame?)
-            #reticle.inflate_ip(10, 10)
+            reticle.inflate_ip(2, 2)
             
-            # Create a union'd rect to limit the amount of redrawing of pixels
-            rects_to_update.append(reticle.union(self.last_updated_rects[0]))
+            # Save the changed area for blitting (updating)
+            rects_to_update.append(reticle)
             
-            # Compute the entire updated area: the bounding box of the circle's
-            # last location and the circle's current location.
-            #rect_to_update = updated_rect.union(self.last_updated_rect)
-
             # Draw the sun
             for body_num, body in enumerate(self.bodies):
                 if body.xy[0] >= 0 and body.xy[1] >= 0:
                     rect = self.overlay.blit(body.img,
                                             (body.xy[0]-body.img.get_width()/2,
                                              body.xy[1]-body.img.get_height()/2))
-                    if len(self.last_updated_rects[body_num+1]):
-                        rect = rect.union(self.last_updated_rects[body_num+1])
                     rects_to_update.append(rect)
                 else:
                     rects_to_update.append([])
             
-            # Finally, redraw the circle again to make sure it is on top
-            #pygame.draw.circle(self.overlay, RED, (self.x, self.y), 20, 2)
             self.overlay.blit(self.reticle_surface, reticle)
             
             now = datetime.datetime.now()
-            time_text = self.time_font.render("LIVE: " + now.strftime('%T %d-%m-%Y'), True, RED)
+            time_text = self.time_font.render("Tijd: " + now.strftime('%T %d-%m-%Y'), True, RED)
             rects_to_update.append(self.overlay.blit(time_text, (830, 1050)))
             
             # Update only the changed areas for performance
-            for rect_to_update in rects_to_update:
+            for rect_to_update in rects_to_update+self.last_updated_rects:
                 if len(rect_to_update):
                     screen.blit(self.background, rect_to_update, area=rect_to_update)
                     screen.blit(self.overlay, rect_to_update, area=rect_to_update)
         
-        
-        if len(self.last_updated_rects):
-            result = self.last_updated_rects.copy() + rects_to_update.copy()
-        else:
-            result = rects_to_update.copy()
+        result = rects_to_update.copy()
             
         self.last_updated_rects = rects_to_update.copy()
         return result
