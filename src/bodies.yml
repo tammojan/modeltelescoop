@@ -22,7 +22,7 @@
   title: Dwingeloo 1 & 2
 - coordinates: altaz(70, 0)
   bar_image: bar_cyga.png
-  sky_image: mars.png
+  sky_image: icon_cyga.png
   title: Cygnus A
 - coordinates: altaz(0, 289)
   bar_image: bar_tvtoren.png
