@@ -22,7 +22,11 @@ class Bar:
             self.image = './resources/bar_empty.png'
         else:
             self.image = "./resources/" + image
-        self.preloaded_image = preload_image(self.image)
+
+        if image.endswith(".gif"):
+            self.animated_gif = True
+        else:
+            self.preloaded_image = preload_image(self.image)
           
         if not sound:
             self.preloaded_sound = None
@@ -41,7 +45,7 @@ class RenderBar(RenderBase):
         self.bars["De Melkweg"] = Bar('bar_milkyway.png', '')
         self.bars[None] = Bar('bar_empty.png', '')
 
-        bodies_yaml = yaml.load(open("bodies.yml", "r"))
+        bodies_yaml = yaml.safe_load(open("bodies.yml", "r"))
         for body in bodies_yaml:
             self.bars[body["title"]] = Bar(body.get("bar_image", "bar_empty.png"), body.get("sound", ""), soundloop=body.get("soundloop", False))
         
