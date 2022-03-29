@@ -15,7 +15,6 @@ from radiodataset import get_body_skyxy
 from radiodataset import get_dist_milkyway
 
 from math import sqrt
-from enum import Enum
 
 import yaml
 
@@ -160,9 +159,9 @@ class RenderSkyPlot(RenderBase):
             
             self.overlay.blit(self.reticle_surface, reticle)
             
-            now = datetime.datetime.now()
-            time_text = self.time_font.render(now.strftime('%T %d-%m-%Y'), True, RED)
-            rects_to_update.append(self.overlay.blit(time_text, (820, 1050)))
+            #now = datetime.datetime.now()
+            #time_text = self.time_font.render(now.strftime('%T %d-%m-%Y'), True, RED)
+            #rects_to_update.append(self.overlay.blit(time_text, (820, 1050)))
             
             # Update only the changed areas for performance
             for rect_to_update in rects_to_update+self.last_updated_rects:
