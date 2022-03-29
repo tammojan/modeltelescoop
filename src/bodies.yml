@@ -1,13 +1,13 @@
 --- # Bodies
 - coordinates: altaz(27, 80)
   bar_image: bar_sun.png
-  sky_image: sun.png
+  sky_image: icon_sun.png
   sound: noise.ogg
   soundloop: true
   title: De zon
 - coordinates: altaz(45, 45)
   bar_image: bar_moon.png
-  sky_image: moon.png
+  sky_image: icon_moon.png
   sound: moonbounce.ogg
   title: De maan
 - coordinates: altaz(57, 316)
@@ -42,3 +42,8 @@
   sky_image: icon_pulsar2.png
   sound: vela.ogg
   title: Vela-pulsar
+- coordinates: altaz(80, 80)
+  bar_image: bar_seti.png
+  sky_image: mars.png
+  sound: et.ogg
+  title: SETI
