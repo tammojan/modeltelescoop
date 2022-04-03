@@ -27,7 +27,7 @@ def altaz_to_unit(alt: float, az:float):
         (i.e. normalised to +/-1)
     
     """
-    az = -(az + 90) % 360
+    az = (az - 90) % 360
     
     R = cos(radians(alt))
     x = R*cos(radians(az))
@@ -46,7 +46,7 @@ def unit_to_altaz(x, y):
     """
     R = sqrt(x**2 + y**2)
     alt = degrees(acos(R))
-    az = (degrees(atan2(y, x)) + 270.0) % 360
+    az = -(degrees(atan2(y, x)) + 270.0) % 360
     return (alt, az)
 
 
