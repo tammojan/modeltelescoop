@@ -44,6 +44,6 @@
   title: Vela-pulsar
 - coordinates: altaz(80, 80)
   bar_image: bar_seti.png
-  sky_image: mars.png
+  sky_image: icon_seti2.png
   sound: seti.ogg
   title: SETI
