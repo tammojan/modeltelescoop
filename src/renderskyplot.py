@@ -62,7 +62,7 @@ class RenderSkyPlot(RenderBase):
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
-        pygame.draw.circle(self.background, pygame.Color(15, 15, 15), (530, 540), 420, 0)
+        # pygame.draw.circle(self.background, pygame.Color(150, 150, 150), (530, 540), 420, 0)
         self.reticle_surface = preload_image_alpha('resources/reticle.png')
 
         bodies_yaml = yaml.safe_load(open("bodies.yml", "r"))

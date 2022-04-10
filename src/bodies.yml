@@ -1,5 +1,5 @@
 --- # Bodies
-- coordinates: altaz(27, 80)
+- coordinates: altaz(25, 73)
   bar_image: bar_sun.png
   sky_image: icon_sun.png
   sound: noise.ogg
@@ -10,13 +10,13 @@
   sky_image: icon_moon.png
   sound: moonbounce.ogg
   title: De maan
-- coordinates: altaz(57, 316)
+- coordinates: altaz(57, 336)
   bar_image: bar_pulsar.png
   sky_image: icon_pulsar.png
   sound: pulsar.ogg
   soundloop: true
   title: Pulsar B0329+54
-- coordinates: altaz(51, 164)
+- coordinates: altaz(51, 174)
   bar_image: bar_dwingeloo1.png
   sky_image: icon_dwl2.png
   title: Dwingeloo 1 & 2
@@ -24,7 +24,7 @@
   bar_image: bar_dwingeloo1.png
   sky_image: icon_dwl1.png
   title: Dwingeloo 1 & 2
-- coordinates: altaz(70, 0)
+- coordinates: altaz(40, 270)
   bar_image: bar_cyga.png
   sky_image: icon_cyga.png
   title: Cygnus A
@@ -33,7 +33,7 @@
   sky_image: icon_tvtoren.png
   sound: radio.ogg
   title: Zendmast Hoogersmilde
-- coordinates: altaz(50, 298)
+- coordinates: altaz(60, 298)
   bar_image: andromeda.png
   sky_image: icon_andromeda.png
   title: Andromedanevel
@@ -42,7 +42,7 @@
   sky_image: icon_pulsar2.png
   sound: vela.ogg
   title: Vela-pulsar
-- coordinates: altaz(80, 80)
+- coordinates: altaz(80, 70)
   bar_image: bar_seti.png
   sky_image: icon_seti2.png
   sound: seti.ogg
