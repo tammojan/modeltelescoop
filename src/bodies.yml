@@ -16,11 +16,11 @@
   sound: pulsar.ogg
   soundloop: true
   title: Pulsar B0329+54
-- coordinates: altaz(51, 174)
+- coordinates: altaz(28, 6)
   bar_image: bar_dwingeloo1.png
   sky_image: icon_dwl2.png
   title: Dwingeloo 1 & 2
-- coordinates: altaz(50, 174)
+- coordinates: altaz(33, 0)
   bar_image: bar_dwingeloo1.png
   sky_image: icon_dwl1.png
   title: Dwingeloo 1 & 2
@@ -42,7 +42,7 @@
   sky_image: icon_pulsar2.png
   sound: vela.ogg
   title: Vela-pulsar
-- coordinates: altaz(80, 70)
+- coordinates: altaz(70, 180)
   bar_image: bar_seti.png
   sky_image: icon_seti2.png
   sound: seti.ogg
