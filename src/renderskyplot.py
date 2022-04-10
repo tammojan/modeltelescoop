@@ -182,7 +182,7 @@ class RenderSkyPlot(RenderBase):
             Return a reference to the closest one. """
         # Threshold for minimum amount of pixels to consider being 'over' a body
         THRESHOLD = 20.0
-        THRESHOLD_MILKYWAY = 110.0
+        THRESHOLD_MILKYWAY = 20.0
         
         closest_dist = 0.0
         

@@ -9,7 +9,7 @@ Created on Tue May 21 14:14:28 2019
 import astropy.units as u
 #from astropy.coordinates import EarthLocation, AltAz, Galactic, get_body, SkyCoord
 #from astropy.time import Time
-from util import altaz_to_unit, unit_to_skyxy
+from util import altaz_to_unit, unit_to_skyxy, skyxy_to_unit, unit_to_altaz
 import re
 import numpy as np
 
@@ -51,17 +51,15 @@ def get_body_skyxy(body: str):
     
 
 def get_dist_milkyway(x: float, y: float):
-    # Get distance to milky way (milky way modelled as a straight line)
-    x1 = np.array([389., 976.])
-    x2 = np.array([703., 119.])
-    #angle = np.arctan((x2[1]-x1[1])/(x2[0]-x1[0]))
-    sin_a = -0.938958917510066;
-    cos_a = 0.3440292883292424;
-
-    x0 = np.array([x, y])
-    x0 = x0 - x1;
-    dist = sin_a * x0[0] - cos_a * x0[1]
-    return np.abs(dist)
+    unit_x, unit_y = skyxy_to_unit(x, y)
+    alt, az = unit_to_altaz(unit_x, unit_y)
+    if (0 <= az <= 54 and alt < 44) or \
+       (290 <= az <= 360 and alt < 50) or \
+       (268 <= az <= 290 and alt < 42) or \
+       (245 <= az <= 268 and alt < 34):
+        return 3
+    else:
+        return 100
 
 class RadioDataSet:
     

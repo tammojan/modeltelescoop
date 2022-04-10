@@ -44,7 +44,7 @@ def unit_to_altaz(x, y):
     Returns:
         Tuple[float, float]: alt, az coordinates in degrees
     """
-    R = sqrt(x**2 + y**2)
+    R = min(sqrt(x**2 + y**2), 1)
     alt = degrees(acos(R))
     az = -(degrees(atan2(y, x)) + 270.0) % 360
     return (alt, az)
