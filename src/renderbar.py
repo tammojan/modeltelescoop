@@ -59,13 +59,12 @@ class RenderBar(RenderBase):
         
         # Clear the bar
         if self.full_init:
-            rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))
+            rects_to_update = [screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))]
             self.full_init = False
 
         if self.changed_mode:
-            screen.blit(self.bars[self.bar_mode].preloaded_image, (1082, 0))
-            rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 200, 820, 1080))
-            screen.blit(self.bars[self.bar_mode].preloaded_image, (1082, 0))
+            rect = screen.blit(self.bars[self.bar_mode].preloaded_image, (1082, 0))
+            rects_to_update.append(rect)
             
             # Stop playing the current sound (if any)
             if self.current_sound is not None:
@@ -80,9 +79,11 @@ class RenderBar(RenderBase):
             self.changed_mode = False
 
         if self.bar_mode == "Satelliet":
-            # FIXME hier plaatje tekenen
-            pass
-            
+            for row in range(480):
+                if self.sat_packets_seen[row] > 0:
+                    rect = screen.blit(self.satellite_image, (1082+50, 540+row), pygame.Rect(0, row, 640, 1))
+                    rects_to_update.append(rect)
+
         return rects_to_update
                 
     def set_body_of_interest(self, body):
