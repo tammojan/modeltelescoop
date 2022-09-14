@@ -60,10 +60,10 @@ class RenderBar(RenderBase):
         # Clear the bar
         if self.full_init:
             rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 0, 820, 1080))
-
-        screen.blit(self.bars[self.bar_mode].preloaded_image, (1082, 0))
+            self.full_init = False
 
         if self.changed_mode:
+            screen.blit(self.bars[self.bar_mode].preloaded_image, (1082, 0))
             rects_to_update = screen.fill(BLACK, pygame.Rect(1100, 200, 820, 1080))
             screen.blit(self.bars[self.bar_mode].preloaded_image, (1082, 0))
             
