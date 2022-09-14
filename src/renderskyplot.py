@@ -61,8 +61,10 @@ class RenderSkyPlot(RenderBase):
         # Variable Initialisation
         self.x = 0
         self.y = 0
+        self.sat_x = 0
+        self.sat_y = 0
         self.full_init = True
-        self.sat = Satellite(60)
+        self.satellite = Satellite(60)
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
@@ -139,14 +141,14 @@ class RenderSkyPlot(RenderBase):
             # This is not the first frame, and we need to update the location
             # of the circular window.
  
-            sat_altaz = self.sat.position()
+            sat_altaz = self.satellite.position()
             if sat_altaz:
                 (sat_x_unit, sat_y_unit) = altaz_to_unit(sat_altaz[0], sat_altaz[1])
-                (sat_x, sat_y) = unit_to_skyxy(sat_x_unit, sat_y_unit)
+                (self.sat_x, self.sat_y) = unit_to_skyxy(sat_x_unit, sat_y_unit)
 
                 # Compute the new area for the satellite
-                satellite_rect = pygame.Rect(sat_x - self.satellite_image.get_width()/2,
-                                      sat_y- self.satellite_image.get_height()/2,
+                satellite_rect = pygame.Rect(self.sat_x - self.satellite_image.get_width()/2,
+                                      self.sat_y- self.satellite_image.get_height()/2,
                                       self.satellite_image.get_width(),
                                       self.satellite_image.get_height());
 
@@ -208,16 +210,22 @@ class RenderSkyPlot(RenderBase):
             Return a reference to the closest one. """
         # Threshold for minimum amount of pixels to consider being 'over' a body
         THRESHOLD = 20.0
+        THRESHOLD_SATELLITE = 30.0
         THRESHOLD_MILKYWAY = 20.0
         
         closest_dist = 0.0
         
         dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
+        dist_sat = 1e6
+        if self.satellite:
+            dist_sat = sqrt((self.x - self.sat_x)**2 + (self.y - self.sat_y)**2)
 
         dist_milkyway = get_dist_milkyway(self.x, self.y)
 
         closest_dist = np.min(dists)
 
+        if dist_sat < THRESHOLD_SATELLITE:
+            return "Satelliet"
         if closest_dist <= THRESHOLD:
             return self.bodies[np.argmin(dists)].title
         elif dist_milkyway <= THRESHOLD_MILKYWAY:
