@@ -64,7 +64,7 @@ class RenderSkyPlot(RenderBase):
         self.sat_x = 0
         self.sat_y = 0
         self.full_init = True
-        self.satellite = Satellite(80)
+        self.satellite = Satellite(30)
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
@@ -224,6 +224,7 @@ class RenderSkyPlot(RenderBase):
         closest_dist = np.min(dists)
 
         if dist_sat < THRESHOLD_SATELLITE:
+            self.satellite.set_seen()
             return "Satelliet"
         if closest_dist <= THRESHOLD:
             return self.bodies[np.argmin(dists)].title
@@ -231,6 +232,9 @@ class RenderSkyPlot(RenderBase):
             return "De Melkweg"
         else:
             return None
+
+    def get_sat_info(self):
+        return self.satellite.packets_seen
         
     def __update_bodies__(self):
         for body in self.bodies:

@@ -78,6 +78,10 @@ class RenderBar(RenderBase):
                 self.current_sound.play(fade_ms=FADE_TIME, loops=self.bars[self.bar_mode].soundloop)
             
             self.changed_mode = False
+
+        if self.bar_mode == "Satelliet":
+            # FIXME hier plaatje tekenen
+            pass
             
         return rects_to_update
                 
@@ -85,3 +89,9 @@ class RenderBar(RenderBase):
         if body != self.bar_mode:
             self.bar_mode = body
             self.changed_mode = True
+
+    def set_sat_info(self, sat_info):
+        self.sat_packets_seen = sat_info
+
+    def load_satellite_image(self):
+        self.satellite_image = preload_image("./resources/sat_images/estcube94.png")

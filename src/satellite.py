@@ -19,6 +19,7 @@ class Satellite:
         self.az = lambda t: az[height](t * Satellite._SPEEDUP) + az_shift
         self.alt = lambda t: alt[height](t * Satellite._SPEEDUP)
         self.end_time = self.start_time + timedelta(seconds=self.times[-1])
+        self.packets_seen = np.zeros((480,))
 
     def position(self):
         """Get (alt, az) in degrees"""
@@ -27,3 +28,11 @@ class Satellite:
             return None
         seconds_since_start = (t - self.start_time).total_seconds()
         return np.rad2deg(self.alt(seconds_since_start)[()]), np.rad2deg(self.az(seconds_since_start)[()])
+
+    def set_seen(self):
+        """Indicate that we saw it"""
+        t = datetime.now().timestamp()
+        t0 = self.start_time.timestamp()
+        t1 = self.end_time.timestamp()
+        seen_index = round(np.interp(t, [t0, t1], [0, 479]))
+        self.packets_seen[seen_index] = 1

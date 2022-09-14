@@ -61,6 +61,7 @@ def main():
     
     # Side bar creation
     sidebar = RenderBar()
+    sidebar.load_satellite_image() # FIXME make dynamic
     
     # Start the sound mixer
     pygame.mixer.init()
@@ -149,7 +150,10 @@ def main():
         skyplot.update(x, y)
         
         # Check whether the reticle is over a celestial body
-        sidebar.set_body_of_interest(skyplot.check_body_distances())
+        body_of_interest = skyplot.check_body_distances()
+        sidebar.set_body_of_interest(body_of_interest)
+        if body_of_interest == "Satelliet":
+            sidebar.set_sat_info(skyplot.get_sat_info())
                 
         # Render the scene with the new data
         #rects_to_update.append(lineplot.render(screen))
