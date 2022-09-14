@@ -14,6 +14,9 @@ from renderbase import RenderBase
 from radiodataset import get_body_skyxy
 from radiodataset import get_dist_milkyway
 
+from satellite import Satellite
+from util import altaz_to_unit, unit_to_skyxy
+
 from math import sqrt
 
 import yaml
@@ -59,11 +62,13 @@ class RenderSkyPlot(RenderBase):
         self.x = 0
         self.y = 0
         self.full_init = True
+        self.sat = Satellite(60)
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
         # pygame.draw.circle(self.background, pygame.Color(150, 150, 150), (530, 540), 420, 0)
         self.reticle_surface = preload_image_alpha('resources/reticle.png')
+        self.satellite_image = preload_image_alpha('resources/cubesat.png')
 
         bodies_yaml = yaml.safe_load(open("bodies.yml", "r"))
         self.bodies = [Body(body_dict.get("coordinates", "altaz(45, 45)"),
@@ -133,13 +138,34 @@ class RenderSkyPlot(RenderBase):
         else:
             # This is not the first frame, and we need to update the location
             # of the circular window.
-                    
+ 
+            sat_altaz = self.sat.position()
+            if sat_altaz:
+                (sat_x_unit, sat_y_unit) = altaz_to_unit(sat_altaz[0], sat_altaz[1])
+                (sat_x, sat_y) = unit_to_skyxy(sat_x_unit, sat_y_unit)
+
+                # Compute the new area for the satellite
+                satellite_rect = pygame.Rect(sat_x - self.satellite_image.get_width()/2,
+                                      sat_y- self.satellite_image.get_height()/2,
+                                      self.satellite_image.get_width(),
+                                      self.satellite_image.get_height());
+
+                # Slightly inflate the reticle rect, as otherwise it does not
+                # account for the last pixel column (off-by-one bug in pygame?)
+                satellite_rect.inflate_ip(2, 2)
+
+                # Save the changed area for blitting (updating)
+                rects_to_update.append(satellite_rect)
+                self.overlay.blit(self.satellite_image, satellite_rect)
+            else:
+                self.cleanup_satellite()
+
             # Compute the new area for the reticle
             reticle = pygame.Rect(self.x - self.reticle_surface.get_width()/2,
                                   self.y - self.reticle_surface.get_height()/2,
                                   self.reticle_surface.get_width(),
                                   self.reticle_surface.get_height());
-            
+
             # Slightly inflate the reticle rect, as otherwise it does not
             # account for the last pixel column (off-by-one bug in pygame?)
             reticle.inflate_ip(2, 2)
@@ -158,7 +184,7 @@ class RenderSkyPlot(RenderBase):
                     rects_to_update.append([])
             
             self.overlay.blit(self.reticle_surface, reticle)
-            
+ 
             #now = datetime.datetime.now()
             #time_text = self.time_font.render(now.strftime('%T %d-%m-%Y'), True, RED)
             #rects_to_update.append(self.overlay.blit(time_text, (820, 1050)))
@@ -203,3 +229,6 @@ class RenderSkyPlot(RenderBase):
         for body in self.bodies:
             body.xy = get_body_skyxy(body.name)
         return
+
+    def cleanup_satellite(self):
+        pass
