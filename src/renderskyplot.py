@@ -140,9 +140,9 @@ class RenderSkyPlot(RenderBase):
             # This is not the first frame, and we need to update the location
             # of the circular window.
  
-            sat_altaz = self.satellite.position()
-            if sat_altaz:
-                (sat_x_unit, sat_y_unit) = altaz_to_unit(sat_altaz[0], sat_altaz[1])
+            sat_alt, sat_az = self.satellite.position()
+            if sat_alt >= 0:
+                (sat_x_unit, sat_y_unit) = altaz_to_unit(sat_alt, sat_az)
                 (self.sat_x, self.sat_y) = unit_to_skyxy(sat_x_unit, sat_y_unit)
 
                 # Compute the new area for the satellite
@@ -157,8 +157,6 @@ class RenderSkyPlot(RenderBase):
 
                 # Save the changed area for blitting (updating)
                 rects_to_update.append(satellite_rect)
-            else:
-                self.cleanup_satellite()
 
             # Compute the new area for the reticle
             reticle = pygame.Rect(self.x - self.reticle_surface.get_width()/2,
@@ -182,7 +180,7 @@ class RenderSkyPlot(RenderBase):
                 else:
                     rects_to_update.append([])
             
-            if sat_altaz:
+            if sat_alt >= 0:
                 self.overlay.blit(self.satellite_image, satellite_rect)
             self.overlay.blit(self.reticle_surface, reticle)
  
@@ -216,8 +214,7 @@ class RenderSkyPlot(RenderBase):
         
         dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
         dist_sat = 1e6
-        if self.satellite:
-            dist_sat = sqrt((self.x - self.sat_x)**2 + (self.y - self.sat_y)**2)
+        dist_sat = sqrt((self.x - self.sat_x)**2 + (self.y - self.sat_y)**2)
 
         dist_milkyway = get_dist_milkyway(self.x, self.y)
 
@@ -240,6 +237,3 @@ class RenderSkyPlot(RenderBase):
         for body in self.bodies:
             body.xy = get_body_skyxy(body.name)
         return
-
-    def cleanup_satellite(self):
-        pass

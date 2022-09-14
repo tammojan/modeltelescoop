@@ -25,14 +25,17 @@ class Satellite:
         """Get (alt, az) in degrees"""
         t = datetime.now()
         if t > self.end_time:
-            return None
+            return -0.5, np.rad2deg(self.az(1000))  # Slightly below the horizon so that still within reticle
         seconds_since_start = (t - self.start_time).total_seconds()
         return np.rad2deg(self.alt(seconds_since_start)[()]), np.rad2deg(self.az(seconds_since_start)[()])
 
     def set_seen(self):
         """Indicate that we saw it"""
         t = datetime.now().timestamp()
-        t0 = self.start_time.timestamp()
+        # Start 'transmitting' 5 seconds after satellite rises
+        t0 = (self.start_time + timedelta(seconds=5)).timestamp()
+        if t < t0:
+            return
         t1 = self.end_time.timestamp()
         seen_index = round(np.interp(t, [t0, t1], [0, 479]))
         self.packets_seen[seen_index] = 1
