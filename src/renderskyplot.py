@@ -64,7 +64,7 @@ class RenderSkyPlot(RenderBase):
         self.sat_x = 0
         self.sat_y = 0
         self.full_init = True
-        self.satellite = Satellite(60)
+        self.satellite = Satellite(80)
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
@@ -99,7 +99,6 @@ class RenderSkyPlot(RenderBase):
                     self.update_thread = threading.Thread(target = self.__update_bodies__)
                     self.update_thread.daemon = True
                     self.update_thread.start()
-                    #self.__update_bodies__()
             
     def update(self, x, y):
         """ Update the position of the search light (circular window) """
@@ -158,7 +157,6 @@ class RenderSkyPlot(RenderBase):
 
                 # Save the changed area for blitting (updating)
                 rects_to_update.append(satellite_rect)
-                self.overlay.blit(self.satellite_image, satellite_rect)
             else:
                 self.cleanup_satellite()
 
@@ -175,7 +173,6 @@ class RenderSkyPlot(RenderBase):
             # Save the changed area for blitting (updating)
             rects_to_update.append(reticle)
             
-            # Draw the sun
             for body_num, body in enumerate(self.bodies):
                 if body.xy[0] >= 0 and body.xy[1] >= 0:
                     rect = self.overlay.blit(body.img,
@@ -185,6 +182,8 @@ class RenderSkyPlot(RenderBase):
                 else:
                     rects_to_update.append([])
             
+            if sat_altaz:
+                self.overlay.blit(self.satellite_image, satellite_rect)
             self.overlay.blit(self.reticle_surface, reticle)
  
             #now = datetime.datetime.now()

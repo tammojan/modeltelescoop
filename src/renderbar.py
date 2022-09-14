@@ -43,7 +43,7 @@ class RenderBar(RenderBase):
         self.bar_mode = None
         self.bars = {}
         self.bars["De Melkweg"] = Bar('bar_milkyway.png', '')
-        self.bars["Satelliet"] = Bar('bar_milkyway.png', '')
+        self.bars["Satelliet"] = Bar('bar_satelliet.png', '')
         self.bars[None] = Bar('bar_empty.png', '')
 
         bodies_yaml = yaml.safe_load(open("bodies.yml", "r"))
