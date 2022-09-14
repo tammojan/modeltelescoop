@@ -64,7 +64,7 @@ class RenderSkyPlot(RenderBase):
         self.sat_x = 0
         self.sat_y = 0
         self.full_init = True
-        self.satellite = Satellite(30)
+        self.satellite = Satellite()
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')

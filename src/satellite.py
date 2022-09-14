@@ -1,4 +1,4 @@
-from numpy.random import random
+from numpy.random import random, choice
 import numpy as np
 from datetime import datetime, timedelta
 import pickle
@@ -12,7 +12,9 @@ for sat_height in (30, 60, 80):
 
 class Satellite:
     _SPEEDUP = 20
-    def __init__(self, height: int):
+    def __init__(self):
+        height = choice([30, 30, 30, 30, 60, 60, 60, 60, 80, 80])
+
         az_shift = random() * 2 * np.pi
         self.start_time = datetime.now()
         self.times = times[height] / Satellite._SPEEDUP

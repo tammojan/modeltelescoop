@@ -9,6 +9,8 @@ Created on Thu Jun 27 11:16:27 2019
 import pygame
 
 from renderbase import RenderBase
+from numpy.random import choice
+from glob import glob
 import yaml
 
 WHITE = (255, 255, 255)
@@ -95,4 +97,6 @@ class RenderBar(RenderBase):
         self.sat_packets_seen = sat_info
 
     def load_satellite_image(self):
-        self.satellite_image = preload_image("./resources/sat_images/estcube94.png")
+        all_images = glob("./resources/sat_images/estcube*.png")
+        image_path = choice(all_images)
+        self.satellite_image = preload_image(image_path)
