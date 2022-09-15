@@ -114,11 +114,20 @@ def main():
             if event.type == pygame.QUIT:
                 quit_attempt = True
             elif event.type == pygame.KEYDOWN:
+                (alt, az) = server.get_last_altaz()
                 if event.key == pygame.K_ESCAPE:
                     quit_attempt = True
                 if event.key == pygame.K_RETURN:
                     # Press Enter for a quick print of the FPS
                     logging.debug('FPS: {:.0f}'.format(clock.get_fps()))
+                if event.key == pygame.K_LEFT:
+                    server.set_altaz(alt, az - 1)
+                if event.key == pygame.K_RIGHT:
+                    server.set_altaz(alt, az + 1)
+                if event.key == pygame.K_UP:
+                    server.set_altaz(alt + 1, az)
+                if event.key == pygame.K_DOWN:
+                    server.set_altaz(alt - 1, az)
             if quit_attempt:
                 break
             else:

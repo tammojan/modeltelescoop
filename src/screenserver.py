@@ -105,4 +105,8 @@ class ScreenServer(object):
         run_thread2 = False
 
         
-
+    def set_altaz(self, override_alt, override_az):
+        """ For debugging: just set alt and az """
+        global alt, az
+        alt = max(min(override_alt, 90), 0)
+        az = override_az
