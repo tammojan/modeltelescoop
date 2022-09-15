@@ -11,15 +11,16 @@ for sat_height in (30, 60, 80):
         times[sat_height], az[sat_height], alt[sat_height] = pickle.load(f)
 
 class Satellite:
-    _SPEEDUP = 20
     def __init__(self):
-        height = choice([30, 30, 30, 30, 60, 60, 60, 60, 80, 80])
+        height = choice([30, 30, 60, 60, 60, 60, 80, 80])
 
         az_shift = random() * 2 * np.pi
+        direction = choice([-1, 1])
         self.start_time = datetime.now()
-        self.times = times[height] / Satellite._SPEEDUP
-        self.az = lambda t: az[height](t * Satellite._SPEEDUP) + az_shift
-        self.alt = lambda t: alt[height](t * Satellite._SPEEDUP)
+        speedup = times[height][-1] / 130  # Make sure a pass lasts 130 seconds
+        self.times = times[height] / speedup
+        self.az = lambda t: direction * (az[height](t * speedup) + az_shift)
+        self.alt = lambda t: alt[height](t * speedup)
         self.end_time = self.start_time + timedelta(seconds=self.times[-1])
         self.packets_seen = np.zeros((480,))
 

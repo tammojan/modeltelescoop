@@ -8,7 +8,7 @@ Created on Fri Apr 26 09:41:32 2019
 
 import pygame
 
-from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT
+from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT, SPAWN_SATELLITE_EVENT
 
 from screenserver import ScreenServer
 from renderbar import RenderBar
@@ -61,7 +61,7 @@ def main():
     
     # Side bar creation
     sidebar = RenderBar()
-    sidebar.load_satellite_image() # FIXME make dynamic
+    sidebar.load_satellite_image()
     
     # Start the sound mixer
     pygame.mixer.init()
@@ -80,6 +80,8 @@ def main():
     if not DEBUG:
         pygame.mouse.set_visible(False)
     
+    # Spawn a satellite every 3 minutes
+    pygame.time.set_timer(SPAWN_SATELLITE_EVENT, 180000)
     # Start a timer (= repeating event) for updating the sky coordinates
     # every 60s
     pygame.time.set_timer(UPDATE_COORDS_EVENT, 60000)
@@ -125,6 +127,7 @@ def main():
         # Pass on other events to the scene object
         #lineplot.process_events(filtered_events, pressed_keys)
         skyplot.process_events(filtered_events, pressed_keys)
+        sidebar.process_events(filtered_events, pressed_keys)
         
         # Let pygame handle its own events
         pygame.event.poll()
@@ -153,6 +156,7 @@ def main():
         body_of_interest = skyplot.check_body_distances()
         sidebar.set_body_of_interest(body_of_interest)
         if body_of_interest == "Satelliet":
+            # FIXME This should only be necessary once per satellite, not 60 times per second
             sidebar.set_sat_info(skyplot.get_sat_info())
                 
         # Render the scene with the new data

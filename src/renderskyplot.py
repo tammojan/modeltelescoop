@@ -34,6 +34,8 @@ RED = (255, 0, 0)
 # Reference ID for the pygame event to update the celestial body locations
 UPDATE_COORDS_EVENT = pygame.USEREVENT+1
 
+SPAWN_SATELLITE_EVENT = pygame.USEREVENT+3
+
 
 # Utility functions to load images correctly
 def preload_image(image_path):
@@ -99,6 +101,8 @@ class RenderSkyPlot(RenderBase):
                     self.update_thread = threading.Thread(target = self.__update_bodies__)
                     self.update_thread.daemon = True
                     self.update_thread.start()
+                elif event.type == SPAWN_SATELLITE_EVENT:
+                    self.satellite = Satellite()
             
     def update(self, x, y):
         """ Update the position of the search light (circular window) """
@@ -207,7 +211,8 @@ class RenderSkyPlot(RenderBase):
             Return a reference to the closest one. """
         # Threshold for minimum amount of pixels to consider being 'over' a body
         THRESHOLD = 20.0
-        THRESHOLD_SATELLITE = 30.0
+        THRESHOLD_SATELLITE_IN_VIEW = 50.0
+        THRESHOLD_SATELLITE_DETECTED = 30.0
         THRESHOLD_MILKYWAY = 20.0
         
         closest_dist = 0.0
@@ -220,8 +225,9 @@ class RenderSkyPlot(RenderBase):
 
         closest_dist = np.min(dists)
 
-        if dist_sat < THRESHOLD_SATELLITE:
-            self.satellite.set_seen()
+        if dist_sat < THRESHOLD_SATELLITE_IN_VIEW:
+            if dist_sat < THRESHOLD_SATELLITE_DETECTED:
+                self.satellite.set_seen()
             return "Satelliet"
         if closest_dist <= THRESHOLD:
             return self.bodies[np.argmin(dists)].title

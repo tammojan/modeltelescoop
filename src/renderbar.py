@@ -12,6 +12,7 @@ from renderbase import RenderBase
 from numpy.random import choice
 from glob import glob
 import yaml
+from renderskyplot import SPAWN_SATELLITE_EVENT
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0, 255)
@@ -100,3 +101,9 @@ class RenderBar(RenderBase):
         all_images = glob("./resources/sat_images/estcube*.png")
         image_path = choice(all_images)
         self.satellite_image = preload_image(image_path)
+
+    def process_events(self, events, pressed_keys):
+        if len(events):
+            for event in events:
+                if event.type == SPAWN_SATELLITE_EVENT:
+                    self.load_satellite_image()
