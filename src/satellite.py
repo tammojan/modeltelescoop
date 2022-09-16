@@ -2,6 +2,7 @@ from numpy.random import random, choice
 import numpy as np
 from datetime import datetime, timedelta
 import pickle
+THRESHOLD_SATELLITE_DETECTED = 20.0
 
 times = {}
 az = {}
@@ -23,6 +24,7 @@ class Satellite:
         self.alt = lambda t: alt[height](t * speedup)
         self.end_time = self.start_time + timedelta(seconds=self.times[-1])
         self.packets_seen = np.zeros((480,))
+        self.dist = 1000
 
     def position(self):
         """Get (alt, az) in degrees"""
@@ -32,13 +34,20 @@ class Satellite:
         seconds_since_start = (t - self.start_time).total_seconds()
         return np.rad2deg(self.alt(seconds_since_start)[()]), np.rad2deg(self.az(seconds_since_start)[()])
 
-    def set_seen(self):
-        """Indicate that we saw it"""
-        t = datetime.now().timestamp()
-        # Start 'transmitting' 5 seconds after satellite rises
-        t0 = (self.start_time + timedelta(seconds=5)).timestamp()
-        if t < t0:
-            return
-        t1 = self.end_time.timestamp()
-        seen_index = round(np.interp(t, [t0, t1], [0, 479]))
-        self.packets_seen[seen_index] = 1
+    def seconds_up(self):
+        """Returns the number of seconds that the satellite has been up"""
+        return (datetime.now() - self.start_time).total_seconds()
+
+    def set_dist(self, dist):
+        """Indicate that we saw it, and at how many pixels distance"""
+        self.dist = dist
+
+        if self.dist < THRESHOLD_SATELLITE_DETECTED:
+            t = datetime.now().timestamp()
+            # Start 'transmitting' 5 seconds after satellite rises
+            t0 = (self.start_time + timedelta(seconds=5)).timestamp()
+            if t < t0:
+                return
+            t1 = self.end_time.timestamp()
+            seen_index = round(np.interp(t, [t0, t1], [0, 479]))
+            self.packets_seen[seen_index] = 1

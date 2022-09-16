@@ -74,22 +74,31 @@ class RenderBar(RenderBase):
             # Stop playing the current sound (if any)
             if self.current_sound is not None:
                 self.current_sound.fadeout(FADE_TIME)
+                pygame.mixer.music.stop()
                 self.current_sound = None
             
             # Update sounds
             if self.bars[self.bar_mode].preloaded_sound is not None:
                 self.current_sound = self.bars[self.bar_mode].preloaded_sound
                 self.current_sound.play(fade_ms=FADE_TIME, loops=self.bars[self.bar_mode].soundloop)
+            if self.bar_mode == "Satelliet":
+                if not self.satellite:
+                    print("Bad error, satellite should have been initialized")
+                else:
+                    pygame.mixer.music.set_volume(0.)
+                    pygame.mixer.music.play(start=self.satellite.seconds_up())
+                    rects_to_update.append(screen.fill((50, 50, 50, 255), pygame.Rect(1082+48, 540, 644, 484)))
             
             self.changed_mode = False
 
         if self.bar_mode == "Satelliet":
             if not self.satellite:
                 print("Bad error, satellite should have been initialized")
-                return
+                return rects_to_update
+            pygame.mixer.music.set_volume(max(1-(self.satellite.dist/30)**2, 0))
             for row in range(480):
                 if self.satellite.packets_seen[row] > 0:
-                    rect = screen.blit(self.satellite_image, (1082+50, 540+row), pygame.Rect(0, row, 640, 1))
+                    rect = screen.blit(self.satellite_image, (1082+50, 542+row), pygame.Rect(0, row, 640, 1))
                     rects_to_update.append(rect)
 
         return rects_to_update
@@ -106,6 +115,7 @@ class RenderBar(RenderBase):
         all_images = glob("./resources/sat_images/estcube*.png")
         image_path = choice(all_images)
         self.satellite_image = preload_image(image_path)
+        pygame.mixer.music.load('./resources/sound/estcube107.ogg')
 
     def process_events(self, events, pressed_keys):
         if len(events):
