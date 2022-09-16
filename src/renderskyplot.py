@@ -230,7 +230,7 @@ class RenderSkyPlot(RenderBase):
             return "Satelliet"
         if closest_dist <= THRESHOLD:
             return self.bodies[np.argmin(dists)].title
-        elif closest_dist <= THRESHOLD_SATELLITE_IN_VIEW:
+        elif dist_sat <= THRESHOLD_SATELLITE_IN_VIEW:
             return "Satelliet"
         elif dist_milkyway <= THRESHOLD_MILKYWAY:
             return "De Melkweg"
