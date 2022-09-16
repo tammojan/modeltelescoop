@@ -14,6 +14,9 @@ from renderbase import RenderBase
 from radiodataset import get_body_skyxy
 from radiodataset import get_dist_milkyway
 
+from satellite import Satellite
+from util import altaz_to_unit, unit_to_skyxy
+
 from math import sqrt
 
 import yaml
@@ -28,8 +31,16 @@ TRANSPARANT = (0, 0, 0, 0)
 BLACK = (0, 0, 0, 255)
 RED = (255, 0, 0)
 
+# Threshold for minimum amount of pixels to consider being 'over' a body
+THRESHOLD = 20.0
+THRESHOLD_SATELLITE_IN_VIEW = 80.0
+THRESHOLD_SATELLITE_DETECTED = 20.0
+THRESHOLD_MILKYWAY = 20.0
+
 # Reference ID for the pygame event to update the celestial body locations
 UPDATE_COORDS_EVENT = pygame.USEREVENT+1
+
+SPAWN_SATELLITE_EVENT = pygame.USEREVENT+3
 
 
 # Utility functions to load images correctly
@@ -58,12 +69,16 @@ class RenderSkyPlot(RenderBase):
         # Variable Initialisation
         self.x = 0
         self.y = 0
+        self.sat_x = 0
+        self.sat_y = 0
         self.full_init = True
+        self.satellite = Satellite()
         
         # Pre-load the external resources
         self.background = preload_image('resources/panorama.png')
         # pygame.draw.circle(self.background, pygame.Color(150, 150, 150), (530, 540), 420, 0)
         self.reticle_surface = preload_image_alpha('resources/reticle.png')
+        self.satellite_image = preload_image_alpha('resources/cubesat.png')
 
         bodies_yaml = yaml.safe_load(open("bodies.yml", "r"))
         self.bodies = [Body(body_dict.get("coordinates", "altaz(45, 45)"),
@@ -92,7 +107,8 @@ class RenderSkyPlot(RenderBase):
                     self.update_thread = threading.Thread(target = self.__update_bodies__)
                     self.update_thread.daemon = True
                     self.update_thread.start()
-                    #self.__update_bodies__()
+                elif event.type == SPAWN_SATELLITE_EVENT:
+                    self.satellite = Satellite()
             
     def update(self, x, y):
         """ Update the position of the search light (circular window) """
@@ -133,13 +149,31 @@ class RenderSkyPlot(RenderBase):
         else:
             # This is not the first frame, and we need to update the location
             # of the circular window.
-                    
+ 
+            sat_alt, sat_az = self.satellite.position()
+            if sat_alt >= 0:
+                (sat_x_unit, sat_y_unit) = altaz_to_unit(sat_alt, sat_az)
+                (self.sat_x, self.sat_y) = unit_to_skyxy(sat_x_unit, sat_y_unit)
+
+                # Compute the new area for the satellite
+                satellite_rect = pygame.Rect(self.sat_x - self.satellite_image.get_width()/2,
+                                      self.sat_y- self.satellite_image.get_height()/2,
+                                      self.satellite_image.get_width(),
+                                      self.satellite_image.get_height());
+
+                # Slightly inflate the reticle rect, as otherwise it does not
+                # account for the last pixel column (off-by-one bug in pygame?)
+                satellite_rect.inflate_ip(2, 2)
+
+                # Save the changed area for blitting (updating)
+                rects_to_update.append(satellite_rect)
+
             # Compute the new area for the reticle
             reticle = pygame.Rect(self.x - self.reticle_surface.get_width()/2,
                                   self.y - self.reticle_surface.get_height()/2,
                                   self.reticle_surface.get_width(),
                                   self.reticle_surface.get_height());
-            
+
             # Slightly inflate the reticle rect, as otherwise it does not
             # account for the last pixel column (off-by-one bug in pygame?)
             reticle.inflate_ip(2, 2)
@@ -147,7 +181,6 @@ class RenderSkyPlot(RenderBase):
             # Save the changed area for blitting (updating)
             rects_to_update.append(reticle)
             
-            # Draw the sun
             for body_num, body in enumerate(self.bodies):
                 if body.xy[0] >= 0 and body.xy[1] >= 0:
                     rect = self.overlay.blit(body.img,
@@ -157,8 +190,10 @@ class RenderSkyPlot(RenderBase):
                 else:
                     rects_to_update.append([])
             
+            if sat_alt >= 0:
+                self.overlay.blit(self.satellite_image, satellite_rect)
             self.overlay.blit(self.reticle_surface, reticle)
-            
+ 
             #now = datetime.datetime.now()
             #time_text = self.time_font.render(now.strftime('%T %d-%m-%Y'), True, RED)
             #rects_to_update.append(self.overlay.blit(time_text, (820, 1050)))
@@ -180,24 +215,32 @@ class RenderSkyPlot(RenderBase):
     def check_body_distances(self):
         """ Check distances between all celestial bodies and the reticle.
             Return a reference to the closest one. """
-        # Threshold for minimum amount of pixels to consider being 'over' a body
-        THRESHOLD = 20.0
-        THRESHOLD_MILKYWAY = 20.0
         
         closest_dist = 0.0
         
         dists = np.array([sqrt((self.x - body.xy[0])**2 + (self.y - body.xy[1])**2) for body in self.bodies])
+        dist_sat = 1e6
+        dist_sat = sqrt((self.x - self.sat_x)**2 + (self.y - self.sat_y)**2)
 
         dist_milkyway = get_dist_milkyway(self.x, self.y)
 
         closest_dist = np.min(dists)
 
+        if dist_sat < THRESHOLD_SATELLITE_DETECTED:
+            self.satellite.set_dist(dist_sat)
+            return "Satelliet"
         if closest_dist <= THRESHOLD:
             return self.bodies[np.argmin(dists)].title
+        elif dist_sat <= THRESHOLD_SATELLITE_IN_VIEW:
+            self.satellite.set_dist(dist_sat)
+            return "Satelliet"
         elif dist_milkyway <= THRESHOLD_MILKYWAY:
             return "De Melkweg"
         else:
             return None
+
+    def get_sat_info(self):
+        return self.satellite.packets_seen
         
     def __update_bodies__(self):
         for body in self.bodies:

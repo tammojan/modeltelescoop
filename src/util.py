@@ -20,7 +20,7 @@ def altaz_to_unit(alt: float, az:float):
     """Convert alt,az coordinates to coordinates on the projected skydome
     
     Args:
-        alt, az: float angle coordinates
+        alt, az: float angle coordinates in degrees
         
     Returns:
         Tuple[float, float]: x and y coordinates on the unit circle

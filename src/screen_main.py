@@ -8,7 +8,7 @@ Created on Fri Apr 26 09:41:32 2019
 
 import pygame
 
-from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT
+from renderskyplot import RenderSkyPlot, UPDATE_COORDS_EVENT, SPAWN_SATELLITE_EVENT
 
 from screenserver import ScreenServer
 from renderbar import RenderBar
@@ -54,13 +54,14 @@ def main():
     # Create the clock object (for FPS control)
     clock = pygame.time.Clock()
     
-
-    
     # Sky plot creation
     skyplot = RenderSkyPlot()
     
     # Side bar creation
     sidebar = RenderBar()
+    sidebar.load_satellite_image()
+
+    sidebar.set_satellite(skyplot.satellite)
     
     # Start the sound mixer
     pygame.mixer.init()
@@ -79,6 +80,8 @@ def main():
     if not DEBUG:
         pygame.mouse.set_visible(False)
     
+    # Spawn a satellite every 3 minutes
+    pygame.time.set_timer(SPAWN_SATELLITE_EVENT, 180000)
     # Start a timer (= repeating event) for updating the sky coordinates
     # every 60s
     pygame.time.set_timer(UPDATE_COORDS_EVENT, 60000)
@@ -111,11 +114,20 @@ def main():
             if event.type == pygame.QUIT:
                 quit_attempt = True
             elif event.type == pygame.KEYDOWN:
+                (alt, az) = server.get_last_altaz()
                 if event.key == pygame.K_ESCAPE:
                     quit_attempt = True
                 if event.key == pygame.K_RETURN:
                     # Press Enter for a quick print of the FPS
                     logging.debug('FPS: {:.0f}'.format(clock.get_fps()))
+                if event.key == pygame.K_LEFT:
+                    server.set_altaz(alt, az - 2)
+                if event.key == pygame.K_RIGHT:
+                    server.set_altaz(alt, az + 2)
+                if event.key == pygame.K_UP:
+                    server.set_altaz(alt + 2, az)
+                if event.key == pygame.K_DOWN:
+                    server.set_altaz(alt - 2, az)
             if quit_attempt:
                 break
             else:
@@ -123,7 +135,12 @@ def main():
         
         # Pass on other events to the scene object
         #lineplot.process_events(filtered_events, pressed_keys)
+        # NOTE: skyplot should go first, because satellite gets created there, used in sidebar.
+        # FIXME: this is not a proper design. But it works.
         skyplot.process_events(filtered_events, pressed_keys)
+        if SPAWN_SATELLITE_EVENT in [event.type for event in filtered_events]:
+            sidebar.set_satellite(skyplot.satellite)
+        sidebar.process_events(filtered_events, pressed_keys)
         
         # Let pygame handle its own events
         pygame.event.poll()
@@ -149,8 +166,9 @@ def main():
         skyplot.update(x, y)
         
         # Check whether the reticle is over a celestial body
-        sidebar.set_body_of_interest(skyplot.check_body_distances())
-                
+        body_of_interest = skyplot.check_body_distances()
+        sidebar.set_body_of_interest(body_of_interest)
+ 
         # Render the scene with the new data
         #rects_to_update.append(lineplot.render(screen))
         #if standby_active:
