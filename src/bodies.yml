@@ -42,7 +42,7 @@
   sky_image: icon_pulsar2.png
   sound: vela.ogg
   title: Vela-pulsar
-- coordinates: altaz(70, 180)
+- coordinates: altaz(35, 190)
   bar_image: bar_seti.png
   sky_image: icon_seti2.png
   sound: seti.ogg
