@@ -49,5 +49,5 @@ class Satellite:
             if t < t0:
                 return
             t1 = self.end_time.timestamp()
-            seen_index = round(np.interp(t, [t0, t1], [0, 479]))
+            seen_index = int(round(np.interp(t, [t0, t1], [0, 479])))
             self.packets_seen[seen_index] = 1
