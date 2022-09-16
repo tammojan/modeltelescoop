@@ -54,14 +54,14 @@ def main():
     # Create the clock object (for FPS control)
     clock = pygame.time.Clock()
     
-
-    
     # Sky plot creation
     skyplot = RenderSkyPlot()
     
     # Side bar creation
     sidebar = RenderBar()
     sidebar.load_satellite_image()
+
+    sidebar.set_satellite(skyplot.satellite)
     
     # Start the sound mixer
     pygame.mixer.init()
@@ -121,13 +121,13 @@ def main():
                     # Press Enter for a quick print of the FPS
                     logging.debug('FPS: {:.0f}'.format(clock.get_fps()))
                 if event.key == pygame.K_LEFT:
-                    server.set_altaz(alt, az - 1)
+                    server.set_altaz(alt, az - 2)
                 if event.key == pygame.K_RIGHT:
-                    server.set_altaz(alt, az + 1)
+                    server.set_altaz(alt, az + 2)
                 if event.key == pygame.K_UP:
-                    server.set_altaz(alt + 1, az)
+                    server.set_altaz(alt + 2, az)
                 if event.key == pygame.K_DOWN:
-                    server.set_altaz(alt - 1, az)
+                    server.set_altaz(alt - 2, az)
             if quit_attempt:
                 break
             else:
@@ -135,7 +135,11 @@ def main():
         
         # Pass on other events to the scene object
         #lineplot.process_events(filtered_events, pressed_keys)
+        # NOTE: skyplot should go first, because satellite gets created there, used in sidebar.
+        # FIXME: this is not a proper design. But it works.
         skyplot.process_events(filtered_events, pressed_keys)
+        if SPAWN_SATELLITE_EVENT in [event.type for event in filtered_events]:
+            sidebar.set_satellite(skyplot.satellite)
         sidebar.process_events(filtered_events, pressed_keys)
         
         # Let pygame handle its own events
@@ -164,10 +168,7 @@ def main():
         # Check whether the reticle is over a celestial body
         body_of_interest = skyplot.check_body_distances()
         sidebar.set_body_of_interest(body_of_interest)
-        if body_of_interest == "Satelliet":
-            # FIXME This should only be necessary once per satellite, not 60 times per second
-            sidebar.set_sat_info(skyplot.get_sat_info())
-                
+ 
         # Render the scene with the new data
         #rects_to_update.append(lineplot.render(screen))
         #if standby_active:

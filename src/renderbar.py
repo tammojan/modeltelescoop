@@ -21,6 +21,7 @@ FADE_TIME = 500  # Sound fade-in/out time in ms
 
 class Bar:
     def __init__(self, image, sound, soundloop=False):
+        self.satellite = None
         if not image:
             self.image = './resources/bar_empty.png'
         else:
@@ -37,6 +38,7 @@ class Bar:
             self.sound = './resources/sound/' + sound
             self.preloaded_sound = pygame.mixer.Sound(self.sound)
             self.soundloop = -1 if soundloop else 0
+
 
 def preload_image(image_path):
     return pygame.image.load(image_path).convert()
@@ -82,8 +84,11 @@ class RenderBar(RenderBase):
             self.changed_mode = False
 
         if self.bar_mode == "Satelliet":
+            if not self.satellite:
+                print("Bad error, satellite should have been initialized")
+                return
             for row in range(480):
-                if self.sat_packets_seen[row] > 0:
+                if self.satellite.packets_seen[row] > 0:
                     rect = screen.blit(self.satellite_image, (1082+50, 540+row), pygame.Rect(0, row, 640, 1))
                     rects_to_update.append(rect)
 
@@ -94,8 +99,8 @@ class RenderBar(RenderBase):
             self.bar_mode = body
             self.changed_mode = True
 
-    def set_sat_info(self, sat_info):
-        self.sat_packets_seen = sat_info
+    def set_satellite(self, sat):
+        self.satellite = sat
 
     def load_satellite_image(self):
         all_images = glob("./resources/sat_images/estcube*.png")
