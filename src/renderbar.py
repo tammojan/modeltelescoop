@@ -95,7 +95,9 @@ class RenderBar(RenderBase):
             if not self.satellite:
                 print("Bad error, satellite should have been initialized")
                 return rects_to_update
-            pygame.mixer.music.set_volume(max(1-(self.satellite.dist/30)**2, 0))
+            #pygame.mixer.music.set_volume(max(1-(self.satellite.dist/30)**2, 0))
+            # Disable SSTV sound since it's annoying :(
+            pygame.mixer.music.set_volume(0.)
             for row in range(480):
                 if self.satellite.packets_seen[row] > 0:
                     rect = screen.blit(self.satellite_image, (1082+50, 542+row), pygame.Rect(0, row, 640, 1))
