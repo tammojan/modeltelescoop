@@ -27,6 +27,7 @@
 - coordinates: altaz(40, 270)
   bar_image: bar_cyga.png
   sky_image: icon_cyga.png
+  sound: jet.ogg
   title: Cygnus A
 - coordinates: altaz(0, 25)
   bar_image: bar_tvtoren.png
