@@ -18,10 +18,12 @@
   title: Pulsar B0329+54
 - coordinates: altaz(28, 6)
   bar_image: bar_dwingeloo1.png
+  sound: hydrogen.ogg
   sky_image: icon_dwl2.png
   title: Dwingeloo 1 & 2
 - coordinates: altaz(33, 0)
   bar_image: bar_dwingeloo1.png
+  sound: hydrogen.ogg
   sky_image: icon_dwl1.png
   title: Dwingeloo 1 & 2
 - coordinates: altaz(40, 270)
@@ -36,6 +38,7 @@
   title: Zendmast Hoogersmilde
 - coordinates: altaz(60, 298)
   bar_image: andromeda.png
+  sound: hydrogen.ogg
   sky_image: icon_andromeda.png
   title: Andromedanevel
 - coordinates: altaz(116, 60)
