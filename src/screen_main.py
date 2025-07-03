@@ -36,8 +36,7 @@ def main():
     # PyGame initialisation
     pygame.init()
 
-    # Start the server for communication between RPis
-    server = ScreenServer('', 7272)
+    server = ScreenServer('192.168.1.108', 7272)
     server.listen()
     
     # Create a window or display

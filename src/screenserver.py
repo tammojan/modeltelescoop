@@ -5,7 +5,7 @@ Created on Mon Jun 24 14:21:33 2019
 @author: S.P. van der Linden
 """
 
-import socket
+import zmq
 import threading
 import json
 import select
@@ -18,33 +18,29 @@ alt = 0.0
 az = 0.0
 
 # Flags to indicate when the threads need to stop
-run_thread1 = True
-run_thread2 = True
+run_thread = True
 
 class ScreenServer(object):
         
     def __init__(self, host, port):
         """ Initialise all basic socket parameters """
-        self.host = host
-        self.port = port
-        # Open a UDP socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind((self.host, self.port))
+        context = zmq.Context()
+        self.socket = context.socket(zmq.SUB)
+        self.socket.connect(f"tcp://{host}:{port}")
+        self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
+        self.socket.setsockopt(zmq.CONFLATE, 1)
         
         # Handles for the threads
         self.listen_thread = None
         self.data_thread = None
         
-        global alt, az, run_thread1, run_thread2
+        global alt, az, run_thread
         alt = 58.0
         az = 90.0
-        run_thread1 = True
-        run_thread2 = True
+        run_thread = True
         
     def listen(self):
         """ Start to listen to incoming connections """
-        #self.sock.listen(10)
         logging.info('Waiting for client...')
         self.listen_thread = threading.Thread(target = self.listen_to_client)
         self.listen_thread.daemon = True
@@ -53,8 +49,7 @@ class ScreenServer(object):
     def wait_for_client(self):
         """ This method monitors the socket and starts up a 'data thread' once
             we get a connection."""
-        global run_thread2
-        while run_thread2:
+        while True:
             # Accept a client once it tries to connect
             #client, address = self.sock.accept()
             #client.settimeout(60)
@@ -70,12 +65,12 @@ class ScreenServer(object):
     def listen_to_client(self):
         """ This method takes a connected client and waits for incoming data """
         
-        global alt, az, run_thread1
+        global alt, az, run_thread
         
         # Loop to continuously listen
-        while run_thread1:
+        while run_thread:
             try:
-                received = self.sock.recv(128).decode('utf-8')
+                received = self.sock.recv_string()
                 if received:
                     try:
                         received_json = json.loads(received)
@@ -99,10 +94,9 @@ class ScreenServer(object):
     
     def finish(self):
         """ Close the socket gracefully """
-        # Stop the threads by toggling the run_threads flag
-        global run_thread1, run_thread2
-        run_thread1 = False
-        run_thread2 = False
+        # Stop the thread by toggling the run_threads flag
+        global run_thread
+        run_thread = False
 
         
     def set_altaz(self, override_alt, override_az):
