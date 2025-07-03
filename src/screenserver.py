@@ -50,16 +50,11 @@ class ScreenServer(object):
         """ This method monitors the socket and starts up a 'data thread' once
             we get a connection."""
         while True:
-            # Accept a client once it tries to connect
-            #client, address = self.sock.accept()
-            #client.settimeout(60)
-            logging.info('Client connected.')
-            
             # Start the thread containing the listener
             self.data_thread = threading.Thread(target = self.listen_to_client,args = (s))
             self.data_thread.daemon = True
             self.data_thread.start()
-        self.sock.close()
+        self.socket.close()
         return False
             
     def listen_to_client(self):
@@ -70,7 +65,7 @@ class ScreenServer(object):
         # Loop to continuously listen
         while run_thread:
             try:
-                received = self.sock.recv_string()
+                received = self.socket.recv_string()
                 if received:
                     try:
                         received_json = json.loads(received)
