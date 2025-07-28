@@ -5,11 +5,31 @@
   sound: noise.ogg
   soundloop: true
   title: De zon
+- coordinates: altaz(60, 40)
+  bar_image: bar_venus.png
+  sky_image: icon_venus.png
+  sound: venus_cw.ogg
+  title: Venus
+- coordinates: altaz(80, 50)
+  bar_image: bar_voyager.png
+  sky_image: icon_voyager.png
+  sound: voyager.ogg
+  title: Voyager 1
 - coordinates: altaz(50, 177)
   bar_image: bar_moon.png
   sky_image: icon_moon.png
   sound: moonbounce.ogg
-  title: De maan
+  title: De maan (1)
+- coordinates: altaz(50, 177)
+  bar_image: bar_moonmissions.png
+  sky_image: icon_moon.png
+  sound: lev1.ogg
+  title: De maan (2)
+- coordinates: altaz(50, 177)
+  bar_image: bar_moon_dslwp.png
+  sky_image: icon_moon.png
+  sound: dslwp_jt4g.ogg
+  title: De maan (3)
 - coordinates: altaz(57, 336)
   bar_image: bar_pulsar.png
   sky_image: icon_pulsar.png

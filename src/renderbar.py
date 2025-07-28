@@ -58,7 +58,9 @@ class RenderBar(RenderBase):
         self.full_init = True
         self.changed_mode = True
         self.current_sound = None
-        
+
+        self.last_moon_state = 0
+
     def render(self, screen: pygame.Surface):
         rects_to_update = []
         
@@ -107,6 +109,12 @@ class RenderBar(RenderBase):
                 
     def set_body_of_interest(self, body):
         if body != self.bar_mode:
+            if body is not None and self.bar_mode is not None and body.startswith("De maan") and self.bar_mode.startswith("De maan"):
+                return
+            if body is not None and body.startswith("De maan"):
+                self.last_moon_state = (self.last_moon_state + 1) % 3
+                self.last_moon_state = (self.last_moon_state + 1) % 3
+                body = body[:body.find("(")] + "(" + str(self.last_moon_state + 1) + ")"
             self.bar_mode = body
             self.changed_mode = True
 
