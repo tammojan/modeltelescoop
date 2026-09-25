@@ -57,6 +57,7 @@ class RenderBar(RenderBase):
         
         self.full_init = True
         self.changed_mode = True
+        self.ticks_last_change = 0
         self.current_sound = None
 
         self.last_moon_state = 0
@@ -88,7 +89,11 @@ class RenderBar(RenderBase):
                     print("Bad error, satellite should have been initialized")
                 else:
                     pygame.mixer.music.set_volume(0.)
-                    pygame.mixer.music.play(start=self.satellite.seconds_up())
+                    try:
+                        pygame.mixer.music.play(start=self.satellite.seconds_up())
+                    except pygame.error as e:
+                        print(e)
+                        pass
                     rects_to_update.append(screen.fill((50, 50, 50, 255), pygame.Rect(1082+48, 540, 644, 484)))
             
             self.changed_mode = False
@@ -112,11 +117,13 @@ class RenderBar(RenderBase):
             if body is not None and self.bar_mode is not None and body.startswith("De maan") and self.bar_mode.startswith("De maan"):
                 return
             if body is not None and body.startswith("De maan"):
-                self.last_moon_state = (self.last_moon_state + 1) % 3
-                self.last_moon_state = (self.last_moon_state + 1) % 3
+                if (pygame.time.get_ticks() - self.ticks_last_change) / 1000 > 3:
+                    self.last_moon_state = (self.last_moon_state + 1) % 3
+                    self.last_moon_state = (self.last_moon_state + 1) % 3
                 body = body[:body.find("(")] + "(" + str(self.last_moon_state + 1) + ")"
             self.bar_mode = body
             self.changed_mode = True
+            self.ticks_last_change = pygame.time.get_ticks()
 
     def set_satellite(self, sat):
         self.satellite = sat
